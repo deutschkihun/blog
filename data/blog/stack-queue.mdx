@@ -15,7 +15,7 @@ stack 과 queue 는 가장 대표적인 선형자료구조 중에 하나이다. 
 
 스택은 LIFO (Last In First Out) 이라는 개념을 가진 선형 자료구조이다. 즉 마지막에 넣은 것을 가장 먼저 빼내는 순서로 데이터를 저장,삭제 한다.
 
-![stack1](/static/5.stack-queue/stack1.png)
+![stack1](/static/stack-queue/stack1.png)
 
 아래의 예시를 보면 좀 더 쉽게 이해 할 수 있다. Sum 함수가 호출 되면서 먼저 print(15) 가 스택에 쌓이게 된다. 그리고 나서 console.log(15) 가 스택에 쌓인다. LIFO 원칙에 따라 마지막에 들어온 console.log(15) 가 먼저 나가면서 콘솔에 15가 찍힌 것을 볼 수 있다. 그리고 나서 print(15) 가 스택메모리 에서 사라지게 된다.
 
@@ -31,7 +31,7 @@ function print(value) {
 print(sum(5, 10))
 ```
 
-![stack2](/static/5.stack-queue/stack2.png)
+![stack2](/static/stack-queue/stack2.png)
 
 스택은 크게 배열과 연결리스트 두가지 방식으로 표현이 가능하다.
 
@@ -41,11 +41,11 @@ print(sum(5, 10))
 
 Unshift 와 shift 를 이용해서 앞부분을 삭제,저장해도 스택으로 볼수 있다. 왜냐하면 시작 부분을 앞에다 두고 LIFO 를 할 수도 있는 것이기 때문이다. 그래서 Push pop 뿐만 아니라 Unshift 와 shift 도 스택으로 볼 수 있음
 
-![stack3](/static/5.stack-queue/stack3.png)
+![stack3](/static/stack-queue/stack3.png)
 
 연결리스트를 이용하게 되면 다음과 같이 설정을 해주면 된다.
 
-![stack4](/static/5.stack-queue/stack4.png)
+![stack4](/static/stack-queue/stack4.png)
 
 ```tsx
 // Array Stack
@@ -103,17 +103,17 @@ console.log(linkedlistStack.top.value)
 
 큐는 FIFO (First In First Out) 이라는 개념을 가진 선형 자료구조이다. 즉 먼저 들어 온것이 먼저나가는 구조로써 Stack 과는 다른 저장,삭제 방식을 가진다.
 
-![queue1](/static/5.stack-queue/queue1.png)
+![queue1](/static/stack-queue/queue1.png)
 
 Front 는 앞부분, Rear 는 뒷부분, 후미를 의미한다. DeQueue 는 삭제, EnQueue 는 추가를 말한다.
 
 큐도 역시 스택처럼 배열과 연결리스트 두가지 방식으로 표현이 가능하다. 우선 배열을 사용하게 되면 dequeue 를 할때에는 가장 먼저들어 온 것들이 먼저 나가고, 그리고 나중에 들어온 것들이 나중에 나가게 로직을 처리해주면 된다.
 
-![queue2](/static/5.stack-queue/queue2.png)
+![queue2](/static/stack-queue/queue2.png)
 
 연결리스트를 이용하면 아래와 같이 구현 해주면 된다. 큐의 경우 연결리스트로 처리하는 것이 좀더 직관적 이기 때문에 연결리스트로 처리해주는 것이 더 좋은 방법이라고 할 수 있다.
 
-![queue3](/static/5.stack-queue/queue3.png)
+![queue3](/static/stack-queue/queue3.png)
 
 ```tsx
 //Array Queue
