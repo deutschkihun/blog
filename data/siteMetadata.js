@@ -1,7 +1,7 @@
 const siteMetadata = {
   title: 'Blog by @deutschkihun',
   author: 'Kihun Kim',
-  headerTitle: 'blog-deutschkihun',
+  headerTitle: 'deutschkihun',
   description: 'A blog created with Next.js and Tailwind.css',
   language: 'en-us',
   theme: 'system', // system, dark or light
