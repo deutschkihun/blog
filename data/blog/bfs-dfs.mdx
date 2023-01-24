@@ -12,7 +12,7 @@ authors: ['default']
 
 Breadth-First-Search (BFS) 와 Depth-First-Search (DFS) 는 코딩테스트에서 정말 자주나오는 단골문제유형 중에 하나이다. 따라서 코딩테스트를 준비한다면 이 둘의 개념 및 접근 방법에 대해 정확히 알고 있는 것이 중요하다.
 
-## 1.BFS
+## 1.Breadth-First-Search (BFS): 너비우선탐색
 
 BFS는 그래프 탐색 알고리즘으로 같은 깊이에 해당하는 정점부터 탐색하는 알고리즘이다.
 
@@ -22,6 +22,55 @@ BFS는 그래프 탐색 알고리즘으로 같은 깊이에 해당하는 정점�
 
 BFS는 **queue** 를 이용하여 구현 할 수 있다. 시작 지점에서 가까운 정점부터 탐색하며 v가 정점의 수, e가 간선의 수 일때 시간복잡도는 O(v+e) 이다.
 
+### BFS 코드 예시
+
+![ex](/static/bfs-dfs/ex.png)
+
+아래와 같이 탐색을 하게 됩니다.
+
+![bfs](/static/bfs-dfs/bfs2.png)
+
+```tsx
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D'],
+  C: ['A', 'E'],
+  D: ['B', 'F'],
+  E: ['C', 'G'],
+  F: ['D', 'H', 'I'],
+  G: ['E', 'J', 'K'],
+  H: ['F', 'L'],
+  I: ['F', 'M'],
+  J: ['G', 'N'],
+  K: ['G', 'O'],
+  L: ['H'],
+  M: ['I', 'P'],
+  N: ['J'],
+  O: ['K'],
+  P: ['M'],
+}
+
+const bfs = (graph, start) => {
+  const checked = []
+  const willCheck = []
+
+  willCheck.push(start)
+
+  while (willCheck.length !== 0) {
+    const node = willCheck.shift() // 큐(First In First Out)
+    if (!checked.includes(node)) {
+      checked.push(node)
+      // reverse 넣으면 같은 너비 기준으로 했을때 오른쪽에서 왼쪽으로 탐색한다.
+      willCheck.push(...graph[node])
+    }
+  }
+  return checked
+}
+
+console.log(bfs(graph, 'A'))
+// ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']
+```
+
 ## 2.DFS
 
 DFS는 그래프 탐색 알고리즘으로 최대한 깊은 정점부터 탐색하는 알고리즘이다.
@@ -29,6 +78,55 @@ DFS는 그래프 탐색 알고리즘으로 최대한 깊은 정점부터 탐색�
 ![dfs](/static/bfs-dfs/dfs.png)
 
 DFS는 **stack** 을 이용하여 구현 할 수 있다. 시작 정점에서 깊은 것 부터 찾는다. V가 정점의 수, E가 간선의 수 일 때 DFS 의 시간복잡도는 O(V+E) 이다.
+
+### DFS 코드 예시
+
+![ex](/static/bfs-dfs/ex.png)
+
+아래와 같이 탐색을 하게 됩니다.
+
+![dfs](/static/bfs-dfs/dfs2.png)
+
+```tsx
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D'],
+  C: ['A', 'E'],
+  D: ['B', 'F'],
+  E: ['C', 'G'],
+  F: ['D', 'H', 'I'],
+  G: ['E', 'J', 'K'],
+  H: ['F', 'L'],
+  I: ['F', 'M'],
+  J: ['G', 'N'],
+  K: ['G', 'O'],
+  L: ['H'],
+  M: ['I', 'P'],
+  N: ['J'],
+  O: ['K'],
+  P: ['M'],
+}
+
+const bfs = (graph, start) => {
+  const checked = [] // 탐색 완료 데이터
+  const willCheck = [] // 탐색 예정 데이터
+
+  willCheck.push(start)
+
+  while (willCheck.length !== 0) {
+    const node = willCheck.pop() // 스택(Last In First Out)
+    if (!checked.includes(node)) {
+      checked.push(node)
+      //reverse() 제거 시 그림의 4,3,2,1 순서로 탐색
+      willCheck.push(...graph[node].reverse())
+    }
+  }
+  return checked
+}
+
+console.log(bfs(graph, 'A'))
+// ['A', 'B', 'D', 'F', 'H', 'L', 'I', 'M', 'P', 'C', 'E', 'G', 'J', 'N', 'K', 'O']
+```
 
 ## 3. BFS & DFS 문제풀이의 핵심
 
@@ -38,4 +136,6 @@ DFS는 **stack** 을 이용하여 구현 할 수 있다. 시작 정점에서 깊
 
 - 방문 했음을 기록 할 check 배열을 노드의 개수만큼 만든다.
 
-// https://medium.com/swlh/bfs-vs-dfs-9b644c6c713c
+#### reference
+
+- [자바스크립트를 이용한 BFS, DFS 구현하기(javascript)](https://choonse.com/2022/02/16/945/)
