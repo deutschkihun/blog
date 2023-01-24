@@ -107,7 +107,7 @@ const graph = {
   P: ['M'],
 }
 
-const bfs = (graph, start) => {
+const dfs = (graph, start) => {
   const checked = [] // 탐색 완료 데이터
   const willCheck = [] // 탐색 예정 데이터
 
@@ -124,15 +124,15 @@ const bfs = (graph, start) => {
   return checked
 }
 
-console.log(bfs(graph, 'A'))
+console.log(dfs(graph, 'A'))
 // ['A', 'B', 'D', 'F', 'H', 'L', 'I', 'M', 'P', 'C', 'E', 'G', 'J', 'N', 'K', 'O']
 ```
 
 ## 3. BFS & DFS 문제풀이의 핵심
 
-- **DFS 와 BFS 의 공통된 목적은 모든 노드를 한 번씩 방문 하는 것이다.**
+- 매우중요: **DFS 와 BFS 의 공통된 목적은 모든 노드를 한 번씩 방문 하는 것이다.**
 
-- 따라서 각 노드들을 한 번씩 방문하려면 각 노드의 방문여부를 기록해두어야 한다.
+- **따라서 각 노드들을 한 번씩 방문하려면 각 노드의 방문여부를 기록해두어야 한다.**
 
 - 방문 했음을 기록 할 check 배열을 노드의 개수만큼 만든다.
 
