@@ -1,0 +1,68 @@
+---
+title: '[String] LeetCode 3번: Longest Substring Without Repeating Characters'
+date: '2023-01-22'
+lastmod: '2023-01-22'
+tags: ['algorithm', 'string', 'leetcode']
+draft: false
+summary: '문자열과 관련된 leetcode 3번 문제 입니다.'
+---
+
+![main](/static/leetcode/3/cover.jpg)
+
+## 1.문제 설명
+
+문자열 s가 주어진다. 그리고 그 문자열에서 가징긴 subString 을 찾아야 하며, 그 subString 안에는 반복되는 문자가 없어야 한다 subString 은 연속되고 빈 문자열이 아닌 경우를 말하며 문자열 s에 속해있어야 한다.
+
+## 2. 문제 접근
+
+문제에서 주어진 예시를 통해 해결방법을 찾아보자
+
+```tsx
+s = 'abcabcbb'
+```
+
+이때 가능한 subString 을 처음부터 찾아나아가는 것이다. 그리고 그 시점마다 가장 긴 subString 의 길이를 따로 저장해 두는 것이다.
+
+```tsx
+a //1
+ab //2
+abc //3
+abca //4 -
+```
+
+abca 는 subStirng 은 맞지만 반복되는 문자가 존재하기 때문에 문제의 조건에 맞지 않는다. 그럼 이경우에 아래처럼 처리해주면 될 것이다.
+
+```tsx
+a //1
+ab //2
+abc //3
+
+abca -> bca
+```
+
+반복되는 부분을 제거하고 새로 받은 부분을 넣어주는 방식을 하게 되면. subStirng 이면서 동시에 반복되는 문자열이 없는 구조를 유지 할 수 있다.
+
+## 3. 풀이
+
+위에서 설명한 방식을 코드로 변경하면 아래와 같다
+
+```tsx
+var lengthOfLongestSubstring = function (s) {
+  let subStr = ''
+  let maxLength = 0
+  for (let i = 0; i < s.length; i++) {
+    if (subStr.includes(s[i])) {
+      subStr = subStr.slice(subStr.indexOf(s[i]) + 1)
+    }
+    subStr += s[i]
+    if (maxLength > s.length) maxLength = s.length
+  }
+  return maxLength
+}
+```
+
+어려운 문제는 아니지만 subString 의 특성이 연속된 문자열이어야 한다는 것에만 주의 하면 문제를 쉽게 풀수 있을것이라 생각한다.
+
+감사합니다.
+
+#### reference: [leetcode 3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/description/)
