@@ -1,0 +1,59 @@
+---
+title: '[String] 프로그래머스: 2018 카카오 블라인드 테스트 [3차] n진수 게임'
+date: '2022-11-22'
+lastmod: '2022-11-22'
+tags: ['algorithm', 'string', 'programmers']
+draft: false
+summary: '문자열과 관련된 2018 카카오 블라인드 테스트 [3차] n진수 게임 접근 방법과 풀이입니다.'
+---
+
+![main](/static/programmers/cover.jpg)
+
+1. 문제 설명
+
+n진법 숫자 게임을한다. 게임에 참가하는 사람의 수는 m,해당 게임의 진법은 n이다. 미리 숫자를 구해서 대답해야 할것을 계산하는 문제이며 미리 구해야 할 숫자는 t 라고 주어진다. 그리고 m명중 본인의 순서는 p이다. 즉 4명이서 게임하고 순서는 1-4 중에 하나가 될 것이다.
+
+2. 문제 접근
+
+이문제는 일단 주어지는 변수가 많고 생각보다 문제를 이해하는게 어려울수 있지만, 조금만 생각해보면 쉽게 풀수 있다. 일단 최대로 미리구해야 하는 갯수부터 아는게 중요한데, 주어진 조건으로 미루워보아 최대 t\*m 개 까지 구하면된다. 왜냐하면 미리구해야하는 숫자의 갯수 곱하기 전체 사람수를 하면 내 순서가 언제든 상관없이 필요한 숫자를 다 알수있다. 또한 p 는 1부터 시작하기 떄문에 실제 코드에서는 p-1로 계산해주어야 한다.
+
+거기서 p 번째 순서에 있는것들만 뽑아주기만 하면 된다.
+
+3. 문제풀이
+
+이제 지금까지 나온 내용을 코드로 옮겨보면 아래와 같다. 참고로 toString(n) 하면 n진수로 변환해준다.
+
+```tsx
+function getTotalStr(n, m, t) {
+  let str = ''
+  for (let i = 0; i < t * m; i++) {
+    str += i.toString(n)
+    if (str.length > t * m) {
+      str = str.slice(0, t * m)
+      break
+    }
+  }
+}
+```
+
+이렇게 된다. 즉 전체 길이를 구하게 된 것이다. 이제 p번째 있는 것 만 뽑아주면 되는데, 이거는 여러가지 방법이 있지만 제일 베스트는 정규식을 이용해서 특정 길이 숫자만큼 뽑아주는게 제일 빠르다.
+
+```tsx
+function solution(n, t, m, p) {
+  const str = getTotalStr(n, m, t)
+  const filter = str.match(new RegExp('.{1,' + m + '}', 'g'))
+  return filter.map((e) => e[p - 1]).join('')
+}
+```
+
+부가설명을 하자면
+
+```tsx
+str.match(new RegExp('.{1,' + m + '}', 'g'))
+```
+
+에서 1,m 은 구간을 1부터 m까지 그리고 앞에 . 은 반복한다는 의미이다. 만약 . 을 빼면 반복하지 않고 처음 조건에 맞는것만 리턴하게 된다.
+
+감사합니다.
+
+#### reference: [[3차] n진수 게임](https://school.programmers.co.kr/learn/courses/30/lessons/17687)

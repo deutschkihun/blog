@@ -1,0 +1,58 @@
+---
+title: '[Binary Search] 프로그래머스: 입국심사'
+date: '2022-01-12'
+lastmod: '2022-02-01'
+tags: ['binary-search', 'algorithm', 'programmers']
+draft: false
+summary: '프로그래머스 입국심사 문제풀이 및 이분탐색 문제 접근 방법'
+authors: ['default']
+---
+
+![main](/static/programmers/cover.jpg)
+
+## 1.문제설명
+
+n명이 입국심사를 기디린다. times 라는 배열이 주어지고 각각의 인덱스는 심사관 그리고 각각의 index에 주어진 숫자는 1명 심사하는데 걸리는 시간이다. 모든 사람을 다 심사하는데 걸리는 최소시간을 구해야 한다.
+
+이문제에서 중요하게 봐야 할것은 제한사항인데 최대 10억명 까지 주어질수 있고 1명당 10억뿐까지 걸릴수 있다고 한다. 이정도라면 시간복잡도가 O(logn) 이 아닌 이상 테스트를 통과하기 어렵다. O(logn) 을 구현하려면 이분탐색이 가장 적합하다.
+
+## 2.문제접근
+
+이분탐색의 핵심은 양끝을 잡고 중간값의 결과에 따라 양끝을 이동하며 경우의 수를 반씩 줄여 나가는 것이다. 이렇게 하기 위해서 해야 할것은 우선 양끝을 잡아야한다. 최대걸리는 시간은 심사관중에 1명당 걸리는 시간이 가장 오래걸리는 사람에게 모든 사람이 심사를 받는 경우이다. 따라서 아래와 같이 작성해주면 된다.
+
+```tsx
+times.sort((a, b) => a - b)
+let left = 1
+let right = n * times[times.length - 1]
+```
+
+그리고 중간값을 찾는다. 그리고 각 심사관 걸리는 시간으로 나누어 몫을 전부 더하면 중간값만큼 시간이 걸릴떄 심사할수 있는 사람의 수가 나온다. 그랬을때 이 수가 left,right 와의 관계를 따려 위치를 수절해주면 된다.
+
+## 3. 문제 풀이
+
+```tsx
+function solution(n, times) {
+  times.sort((a, b) => a - b)
+  let left = 0
+  let right = n * times[times.length - 1]
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2)
+    let sum = times.reduce((a, b) => (a += Math.floor(mid / b)), 0)
+
+    if (sum < n) {
+      left = mid + 1
+    } else {
+      right = mid - 1
+    }
+  }
+}
+```
+
+간단한거 같지만 양끝을 잡는거랑 주어진 시간에서 심사가능한 숫자를 n 과 비교하여 left,right 위치를 수정해주는 것이 생각보다 까다롭다고 생각한다.
+
+감사합니다.
+
+#### reference
+
+- [자바스크립트를 이용한 BFS, DFS 구현하기(javascript)](https://choonse.com/2022/02/16/945/)
