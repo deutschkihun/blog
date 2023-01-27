@@ -1,0 +1,76 @@
+---
+title: '[Binary Search] Leetcode 540번: Single Element in a Sorted Array'
+date: '2022-01-12'
+lastmod: '2022-02-01'
+tags: ['binary-search', 'algorithm', 'programmers']
+draft: false
+summary: '프로그래머스 입국심사 문제풀이 및 이분탐색 문제 접근 방법'
+authors: ['default']
+---
+
+![main](/static/programmers/cover.jpg)
+
+## 1.문제설명
+
+정렬된 배열이 있다. 이 배열에는 1개의 요소를 제외 하고는 모두 2개씩 쌍을 지을수 있다. 이때 오직 1개인 요소를 찾아야 한다.
+또한 시간복잡도 O(log n) 그리고 공간복잡도 O(1) 를 만족해야 한다.
+
+## 2.문제접근
+
+문제 조건으로 보아 주어진 배열의 길이는 무조건 홀수이다. 그리고 공간복잡도가 상수이기 떄문에 추가적인 배열을 사용 할 수 없다.
+시간복잡도가 로그시간이니 이분탐색을 쓰는 것이 가장 적합하다.
+
+이분탐색을 쓰면 중간값이 나오게된다. 이 중간값을 기준으로 조건을 잘나누는 것이 이문제의 핵심이다. 중간값은 홀수가 될수도 있고 짝수가 될 수도 있다. 그때마다 경우의 수는 달라진다.
+
+```tsx
+ex.) nums = [0,0,1,1,2,2,3]
+
+mid = Math.floor((left+right)/2)
+let left = 0
+let right = 6
+let mid = Math.floor((left+right)/2) = 3
+
+nums[mid] = 1 (두번쨰)
+
+
+ex.) 배열 = [0,0,1,1,2,2,3,3,4,5,5,6,6]
+
+let left = 0
+let right = 13
+let mid = Math.floor((left+right)/2) = 6
+
+nums[mid] = 3 (첫번쨰)
+
+```
+
+이렇게 나누는 이유는 2개의 쌍을 찾을 때 앞에 같은 쌍이 있는지 뒤에 같은 쌍이 있는지 다르기 때문이다.
+mid 가 홀수라면 같은 쌍은 한칸뒤에 있지만 mid 가 짝수라면 한칸 앞에 있다.
+
+## 3. 문제 풀이
+
+위의 접근 방식을 코드로 옮기면 다음과 같다.
+
+```tsx
+var singleNonDuplicate = function (nums) {
+  let left = 0
+  let right = nums.length - 1
+
+  while (left < right) {
+    let mid = Math.floor((left + right) / 2)
+    if (mid % 2 === 0) {
+      if (nums[mid] === nums[mid + 1]) left = mid + 2
+      else right = mid
+    } else {
+      if (nums[mid - 1] === nums[mid]) left = mid + 1
+      else right = mid - 1
+    }
+  }
+  return nums[left]
+}
+```
+
+감사합니다.
+
+#### reference
+
+- [540. Single Element in a Sorted Array](https://leetcode.com/problems/single-element-in-a-sorted-array/)
