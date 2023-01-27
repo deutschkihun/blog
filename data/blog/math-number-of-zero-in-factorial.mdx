@@ -1,0 +1,51 @@
+---
+title: '[Binary Search] 백준 1676번: 팩토리얼 0의 갯수'
+date: '2023-01-05'
+lastmod: '2023-01-05'
+tags: ['백준', 'algorithm', 'math']
+draft: false
+summary: '프로그래머스 입국심사 문제풀이 및 이분탐색 문제 접근 방법'
+authors: ['default']
+---
+
+![main](/static/programmers/cover.jpg)
+
+## 1.문제설명
+
+N! 이 주어질때 뒤에서부터 처음 0이 아닌 숫자가 나올 때까지 0의 개수를 구해야 한다.
+
+## 2.문제접근
+
+그러면 처음 0이 나오는 몇 팩토리얼 일까? 바로 n=5일떄 부터 이다. 그리고 5의 배수를 곱할때마다 0이 늘어난다. 즉 5! 부터 9! 까지는 1개 10! 부터 14! 까지는 2개 15! 부터 19! 까지는 3개 이런식으로 간다. 즉 n을 5로 나눈 몫과 같다.
+
+## 3. 문제 풀이
+
+위의 접근 방식을 코드로 옮기면 다음과 같다.
+
+```tsx
+function factorial(num) {
+  if (num === 0) return 0
+  if (num === 1) return 1
+  else {
+    return num * factorial(num - 1)
+  }
+}
+
+function solution(n) {
+  let answer = 0
+  if (n < 5) return 0
+  while (n >= 5) {
+    answer += n / 5
+    n /= 5
+  }
+  return answer
+}
+
+console.log(solution(5))
+```
+
+감사합니다.
+
+#### reference
+
+- [540. Single Element in a Sorted Array](https://leetcode.com/problems/single-element-in-a-sorted-array/)
