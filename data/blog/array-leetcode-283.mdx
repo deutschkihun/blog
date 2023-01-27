@@ -1,0 +1,57 @@
+---
+title: '[Array] LeetCode 283번: Move Zeroes'
+date: '2023-01-22'
+lastmod: '2023-01-22'
+tags: ['algorithm', 'array', 'leetcode']
+draft: false
+summary: '배열과 관련된 leetcode 283번 문제 입니다.'
+---
+
+![main](/static/leetcode/cover.jpg)
+
+## 1.문제 설명
+
+target 배열과 arr 배열이 주어진다. arr 의 sub-array 를 reverse 하여서 target 과 같은 배열을 만들수 있는지 boolean 으로 return 해주어야 하는 문제이다. reverse 의 횟수 제한은 없다.
+
+## 2. 문제 접근
+
+reverse 의 횟수제한이 없기 때문에 안에 들어있는 요소들의 갯수와 정확히 일치하기만 하면 target 과 똑같은 배열을 만들수 있다.
+
+## 3. 풀이
+
+안의 요소의 종류와 갯수를 계산하는 hash function 을 만들어서 비교하는 방법이 있다.
+
+```tsx
+var canBeEqual = function (target, arr) {
+  target.sort((a, b) => a - b)
+  arr.sort((a, b) => a - b)
+  let arrHash = new Map()
+  let targetHash = new Map()
+  arr.forEach((e, i) => {
+    arrHash.set(e, arrHash.get(e) + 1 || 1)
+    targetHash.set(target[i], targetHash.get(target[i]) + 1 || 1)
+  })
+
+  const list1 = [...targetHash.entries()]
+  const list2 = [...arrHash.entries()]
+
+  return JSON.stringify(list1) === JSON.stringify(list2)
+}
+```
+
+속도면에서 좋은 풀이는 아니지만 풀리긴 풀린다. 아래는 훨씬 심플하고 속도가 빠른 풀이이다.
+
+```tsx
+var canBeEqual = function (target, arr) {
+  if (target.length === 1 && arr.length === 1) {
+    return target[0] === arr[0]
+  }
+  return target.sort().toString() === arr.sort().toString()
+}
+```
+
+길이가 1인 경우만 따져서 생각하고 나머지는 그냥 정렬해서 문자열화 시키면 된다. 배열 자체를 비교하는 것은 복잡하기 때문이다. 할수는 있지만 단순 비교는 안의 요소를 비교하는 것이 아니라 참조값을 비교하기 때문에 무조건 false 가 나온다.
+
+감사합니다.
+
+#### reference: [leetcode 1460. Make Two Arrays Equal by Reversing Subarrays](https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays)
