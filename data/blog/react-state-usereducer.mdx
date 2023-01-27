@@ -1,0 +1,321 @@
+---
+title: '[React] useState 그리고 useReducer 제대로 사용하기'
+date: '2022-10-01'
+lastmod: '2023-10-01'
+tags: ['react']
+draft: false
+summary: 'react 가 입문하기 쉬운 언어라 많이 사용하지만 생각보다 제대로 사용하지 않으면 별로 좋지 않은 코드가 많이 생긴다. 이 포스팅을 통해 리액트를 제대로 사용해보자'
+authors: ['default']
+---
+
+![main](/static/react/cover.jpg)
+
+react 가 입문하기 쉬운 언어라 많이 사용하지만 생각보다 제대로 사용하지 않으면 별로 좋지 않은 코드가 많이 생긴다. 이 포스팅을 통해 리액트를 제대로 사용해보자
+
+# useState 그리고 useReducer 제대로 사용하기
+
+Redux 를 쓰는 경우에는 useReducer 를 많이 쓰지만 그렇지 않은경우에는 생각보다 useReducer 를 많이 사용하지 않는다. useState 를 주로 사용하는데 물론 useState 가 사용하기 매우 쉽긴하지만 state 가 변경되면 리랜더링되는 아주 불필요한 경우가 발생한다. 따라서 useReducer 를 이용하여 useState 를 대체하는 방법을 적극 추천하는 바이다.
+
+### **React 공식문서의 설명을 첨부하자면 다음과 같다.**
+
+**useReducer 는 useState의 대체 함수입니다**. (state, action) => newState의 형태로 reducer를 받고 dispatch 메서드와 짝의 형태로 현재 state를 반환합니다.
+
+다수의 하윗값을 포함하는 복잡한 정적 로직을 만드는 경우나 다음 state가 이전 state에 의존적인 경우에 보통 useState보다 useReducer를 선호합니다. 또한 useReducer는 자세한 업데이트를 트리거 하는 컴포넌트의 성능을 최적화할 수 있게 하는데, 이것은 **콜백 대신 dispatch**를 전달 할 수 있기 때문입니다.
+
+```tsx
+const [state, dispatch] = useReducer(reducer, initialState)
+
+예를 들어
+
+ const [state, dispatch] = useReducer(
+    reducer,
+    {count: initialCount}
+  );
+```
+
+### 여기서 잠깐 dispatch 란 ?
+
+디스패치는 reducer 에게 Action 을 발생하라고 시키는 것이라고 이해하면 된다. dispatch 함수는 dispatch(action) 이런 식으로 Action 을 인자로 넘긴다.
+
+### UseReducer 의 특징
+
+- 현재 컴포넌트가 아닌 다른 곳에 state를 저장하고 싶을때 유용한다.
+- reducer 라는 함수를 만들고 state와 action 이라는 인자를 받는다.
+- reducer 라는 함수는 예약어는 아니어서 다른 이름으로 만들수있다. (하지만 reducer로 사용하는게 좋다.)
+- action에는 객체가 전달되는데 그 안에 type 이라는 프로퍼티를 주로 설정해서 사용한다.
+- type 프로퍼티를 통해 switch 문으로 분기한다. (redux 스럽게 설계하는 방법)
+- state는 useReducer를 통해 저장된 변수다.
+- 주로 initialState라는 객체에 초기 정보를 담고 useReducer 에게 전달한다.
+
+### useState 와 useReducer 비교하기
+
+```tsx
+import { useState } from 'react'
+
+function EditCalendarEvent() {
+  const [startDate, setStartDate] = useState()
+  const [endDate, setEndDate] = useState()
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [location, setLocation] = useState()
+  const [attendees, setAttendees] = useState([])
+
+  return (
+    <>
+      <input value={title} onChange={(e) => setTitle(e.target.value)} />
+      {/* ... */}
+    </>
+  )
+}
+```
+
+위 예시는 달력 이벤트를 업데이트하는 컴포넌트입니다. 몇가지 문제점이 있습니다.
+
+- state 가 너무 많다.
+- 가독성이 떨어진다
+- start date 와 end date 에서 생길수 있는 버그를 고려하지 않고 있다. (= 세이프가드가 없다)
+
+세이프가드가 없는 문제는 물론 set 하는 부분에서 제약 조건을 걸어서 로직을 짜는 방법은 있지만 그것보다 더 좋은 방법이 있으니 그것으 바로 **useReducer** 입니다.
+
+### useReducer 의 핵심 기능: 상태 A에서 상태 B로의 변환을 제어
+
+```tsx
+import { useReducer } from 'react'
+
+function EditCalendarEvent() {
+  const [event, updateEvent] = useReducer(
+    (prev, next) => {
+      return { ...prev, ...next }
+    },
+    { title: '', description: '', attendees: [] }
+  )
+
+  return (
+    <>
+      <input value={event.title} onChange={(e) => updateEvent({ title: e.target.value })} />
+      {/* ... */}
+    </>
+  )
+}
+```
+
+사실 위의 기능은 useState 스럽게도 구현하는게 가능하다.
+
+```tsx
+import { useState } from 'react'
+
+function EditCalendarEvent() {
+  const [event, setEvent] = useState({
+    title: '',
+    description: '',
+    attendees: [],
+  })
+
+  return (
+    <>
+      <input value={event.title} onChange={(e) => setEvent({ ...event, title: e.target.value })} />
+      {/* ... */}
+    </>
+  )
+}
+```
+
+틀린 말은 아닙니다만, 하지만 이렇게 쓰면 set을 사용하지 않고도 `...event로` 전개하면 object 의 상태를 변경하는게 가능해진다. 그래서 전개하는것을 차단해야 합니다. 또한 useReducer 가 제공하는 상태변환 로직을 useState 에서는 사용하는게 불가능합니다.
+
+아까 맨 처음에 보여드렸던 useState 가 많은 코드에서 보았드시 safe guard 가 없어서 생기는 버그들을 set 을 사용하는 시점에서 로직을 추가하여 작업 할 수 있다고 말씀드렸는데, 이러한 부분은 useReducer 를 이용하면 useReducer 안에 자체적인 상태변화 함수를 통해 설정을 할 수 있습니다.
+
+```tsx
+import { useReducer } from 'react'
+
+function EditCalendarEvent() {
+  const [event, updateEvent] = useReducer(
+    (prev, next) => {
+      const newEvent = { ...prev, ...next }
+      if (newEvent.startDate > newEvent.endDate) {
+        newEvent.endDate = newEvent.startDate
+      }
+      if (newEvent.title.length > 100) {
+        newEvent.title = newEvent.title.substring(0, 100)
+      }
+      return newEvent
+    },
+    { title: '', description: '', attendees: [] }
+  )
+
+  return (
+    <>
+      <input value={event.title} onChange={(e) => updateEvent({ title: e.target.value })} />
+      {/* ... */}
+    </>
+  )
+}
+```
+
+- 시작날짜가 끝나는 날짜를 넘을수 없게 설정 하는 상태변화 함수
+- 제목의 길이를 제한하는 상태변화 함수
+
+이러한 부가적인 기능들을 useReducer 는 자체적으로 설정하는 것이 바로 가능하다.
+
+### useState를 사용하는 거의 모든 곳에서 useReducer를 사용할 수 있습니다.
+
+지금은 3가지 state 를 관리하지만 아주 간단에 counter 같은 것도 useReducer 로 만들수 있다.
+
+```tsx
+// useState
+import { useState } from 'react'
+
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  return <button onClick={() => setCount(count + 1)}>Count is {count > 10 ? 10 : count}</button>
+}
+
+// useReducer
+import { useReducer } from 'react'
+
+function Counter() {
+  const [count, setCount] = useReducer((prev, next) => Math.min(next, 10), 0)
+
+  return <button onClick={() => setCount(count + 1)}>Count is {count}</button>
+}
+```
+
+useReducer 에서는 useState 에 추가기능을 넣어서 값이 최대 10까지만 랜더링 되게끔 설정을 해놓았다. 하지만 useState 에서는 이러한 설정을 count 가 사용되는 부분에 직접 로직을 짜주어야 한다. 지금같이 간단한 경우라면 상관없지만 복잡한 경우라면 useReducer 를 쓰는게 더 효율적이지 않을까??
+
+### useReducer 는 Redux 에서 많이 쓰던데 나는 Redux 는 쓰기 싫어요, 근데 useReducer 는 쓰고 싶은데 괜찮을까요?
+
+물론 가능합니다. Redux 스럽게 쓰려면 action 기반으로 switch case 를 이용해서 상태 관리를 해주는게 가능합니다. (필자는 개인적으로 Redux 선호하지 않습니다. 상태관리 할떄 3rd-party library 없이 기존에 있는 useState,useReducer,useContext 같은 것들을 이용해서 작업하는 것을 더 선호 합니다.)
+
+```tsx
+import { useReducer } from 'react'
+
+function EditCalendarEvent() {
+  const [event, updateEvent] = useReducer(
+    (state, action) => {
+      const newEvent = { ...state }
+
+      switch (action.type) {
+        case 'updateTitle':
+          newEvent.title = action.title
+          break
+        // action들...
+      }
+      return newEvent
+    },
+    { title: '', description: '', attendees: [] }
+  )
+
+  return (
+    <>
+      <input
+        value={event.title}
+        onChange={(e) => updateEvent({ type: 'updateTitle', title: 'Hello' })}
+      />
+      {/* ... */}
+    </>
+  )
+}
+```
+
+이렇게 switch case 를 사용해서 action 기반의 reducer 를 만들어도 되지만, 이렇게 하면 switch case 의 type 들을 경우에 따라 매번 다르게 설정해주어야 해서 필자는 선호하지 않습니다.
+
+### 하지만 Redux 를 상태관리 하는데 사용하는 회사들이 많이 있습니다.
+
+이 포스팅은 useState 의 남용을 막고 useReducer 를 적절하게 사용하자는 취지에서 만들어지 포스팅이랑 Redux 스럽게 useReducer 를 설계하는 예시에 대해서 추가적으로 설명하지는 않겠습니다. 그대신 참고하면 좋은 링크 첨부해 두겠습니다.
+
+- https://react.vlpt.us/basic/20-useReducer.html
+- https://codesandbox.io/s/begin-react-4ve2t?fontsize=14&file=/src/App.js
+
+### Reducer 공유하기 (with useContext)
+
+```tsx
+const TodosDispatch = React.createContext(null)
+
+function TodosApp() {
+  // 참고: `dispatch = updateTodos` 는 리렌더 간에 변하지 않습니다
+  const [todos, updateTodos] = useReducer(todosReducer)
+
+  return (
+    <TodosDispatch.Provider value={updateTodos}>
+      <DeepTree todos={todos} />
+    </TodosDispatch.Provider>
+  )
+}
+
+function DeepChild(props) {
+  // action을 수행하고 싶다면 context로부터 dispatch를 전달받으면 됩니다.
+  const updateTodos = useContext(TodosDispatch)
+
+  function handleClick() {
+    updateTodos({ type: 'add', text: 'hello' })
+  }
+
+  return <button onClick={handleClick}>Add todo</button>
+}
+```
+
+### useReducer 그리고 불변성 (immutable)
+
+useReducer 훅의 상태 값은 항상 불변해야 함에 주의해야 합니다. 공식문서에는 다음과 같이 설명하고 있습니다.
+
+`You mutated an existing state object and returned it, so React ignored the update. To fix this, you need to ensure that you’re always replacing objects and arrays in state instead of mutating them`
+
+쉽게말해 hook 의 상태는 불변성을 가지니 기존상태를 수정하지 말고 새로운 상태를 만들어서 사용하라는 뜻 입니다.
+
+```tsx
+function reducer(state, action) {
+  switch (action.type) {
+    case 'incremented_age': {
+      // 🚩 Wrong: 기존 객체를 변경시켰습니다
+      state.age++
+      return state
+    }
+    case 'changed_name': {
+      // 🚩 Wrong: 기존 객체를 변경시켰습니다
+      state.name = action.nextName
+      return state
+    }
+    // ...
+  }
+}
+```
+
+이렇게 쓰면 안되고
+
+```tsx
+function reducer(state, action) {
+  switch (action.type) {
+    case 'incremented_age': {
+      // ✅ Correct: 새로운 객체를 생성합니다
+      return {
+        ...state,
+        age: state.age + 1,
+      }
+    }
+    case 'changed_name': {
+      // ✅ Correct: 새로운 객체를 생성합니다
+      return {
+        ...state,
+        name: action.nextName,
+      }
+    }
+    // ...
+  }
+}
+```
+
+### 그럼 useState 버리고 useReducer 만 써야 하는가?
+
+항상 한쪽으로 쏠리거나 극단적으로 생각하는 것은 좋지 않은 사고방식이라고 생각합니다. 물론 이 포스팅에서 useState 가 좋지 않고 useReducer 가 좋다는 식의 글을 쓴 것 때문에 오해 할 수 있겠지만 useState 는 react hook 에서 제공 하는 hook 중에서 가장 기본이 되는 것입니다. useState 를 쓰는 것은 문제가 되지 않으나 서비스가 복잡해지고 요구사항이 많아지는것에대해 단순히 useState 만으로 대응하는 것이 아니라 useReducer 를 이용하여 복잡한 로직을 유연하게 풀어나가는 것이 좋다고 생각합니다. 더 확장하여 Redux,XState,MobX,Immer,Zustand,Recoil 같은 다양한 상태관리 라이브러리를 사용 할 수 있겠지만 저는 최대한 복잡성을 추구하지 않고 있는 그대로의 선에서 해결하는 것을 추천드립니다.
+
+**심플하고 가독성 좋은게 가장 좋습니다. 필요에 따라서만 추가적인 라이브러리 혹은 기능을 추가하는게 좋다고 생각합니다.**
+
+#### reference
+
+- [[번역] useState 지옥에서 벗어나기](https://velog.io/@eunbinn/a-cure-for-react-useState-hell?utm_source=substack&utm_medium=email)
+
+- [A Cure for React useState Hell?](https://www.builder.io/blog/use-reducer)
+
+- [useReducer를 사용하여 업데이트 로직 분리하기](https://react.vlpt.us/basic/20-useReducer.html)
+
+- [React docs beta](https://beta.reactjs.org/reference/react/useReducer#ive-dispatched-an-action-but-the-screen-doesnt-update)
