@@ -649,6 +649,86 @@ var Person = function (name, age) {
 var me = new Person('kihun', 30)
 ```
 
+## 8. Array.prototype.map & filter
+
+혹시라도 map,filter,forEach 와 return 을 같이 사용해서 로직을 짜는 것을 고려하신다면 다음과 같은 상황에 주의하시길 바랍니다.
+
+```tsx
+const arr = [2, 3, 1, 5]
+
+const list1 = arr.filter((e) => {
+  if (e > 3) return
+  else return e
+})
+
+console.log(list1)
+
+const list2 = arr.filter((e) => {
+  if (e > 3) return
+  else return e
+})
+
+console.log(list2)
+```
+
+둘의 결과는 과연 어떻게 다를까요? 직관적으로 보면 같다고 생각할 수 있지만 결과는 약간의 차이가 있다.
+
+```tsx
+list1: [2, 3, 1, undefined]
+
+list2: [2, 3, 1]
+```
+
+보다시피 map 에는 undefined 가 들어가 있다. 이러한 확실한 차이가 존재하는데 filter 는 필터링을 위한 목적으로 설계 된 것이지만 map 은 그렇지 않다. 따라서 무언가를 리턴해주어야 하고 그렇지 않으면 undefined 을 리턴하게 된다. 원래 자바스크립트는 defualt 로 undefined 을 리턴해준다 (심지어 return type 을 void 로 지정해주어도 undefined 을 리턴한다)
+
+따라서 필터링이 목적이라면 filter 메소드를 사용하자.
+
+## 9. forEach 메소드와 loop 제어문
+
+혹시라도 forEach 로 iteration 제어를 시도했다면 죄송하지만 forEach 를 완전 잘못 이해하고 있는 겁니다. 공식문서에도 나와있드시 forEach 는 예외를 발생시키는 경우를 제외하고는 forEach 루프를 중단시킬 방법이 없다. 따라서 그러한 목적으로 forEach 메소드를 사용해서는 안된다.
+
+**즉 forEach 제어하기 위해**
+
+- **break**
+- **continue**
+
+**를 쓰면 compile 에러가 발생한다.**
+
+- **return**
+
+은 컴파일상에는 에러가 없다. 하지만 리턴값에 영향을 주지는 않는다. 왜냐하면 forEach 는 배열을 순회하는 역활을 하지, 순회하면서 설정된 로직에 의해 새로운 배열을 자동으로 리턴해주지는 않기 때문이다.
+
+**따라서 return 은 있으나 없으나 에러는 발생시키지 않지만 동작도 하지 않는다.**
+
+혹시 이러한 목적을 생각했다면 forEach 가 아니라 map 혹은 filter 를 사용해야한다.
+
+필자가 생각하기에 forEach 를 쓰기에 적합한 상황은 크게 2가지가 있다.
+
+```tsx
+1. 입력받은 배열의 내부요소를 추가적인 공간을 사용하지 않고 변경 할 때
+
+const arr = [2,3,1,5]
+
+arr.forEach((e,i) => {
+  if(e<4) arr[i] = e+1
+})
+
+arr = [3, 4, 2, 5]
+```
+
+```tsx
+2. 입력받은 배열의 내부요소를 변경하고 추가적인 공간에 저장 할 때
+
+const arr = [2,3,1,5]
+let list = []
+
+arr.forEach((e,i) => {
+  if(e<4) list.push(e+1)
+})
+
+list = [3, 4, 2]
+```
+
 # JavaScript 로 구현한 알아두면 유용한 로직
 
 ## 1. Combination (조합)
