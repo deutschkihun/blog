@@ -1,59 +1,51 @@
 ---
-title: '[Hash] LeetCode 560번: Subarray Sum Equals K'
-date: '2022-11-03'
-lastmod: '2022-11-03'
-tags: ['algorithm', 'hash', 'leetcode']
+title: '[Math] 백준 1740번: 거듭제곱'
+date: '2022-12-03'
+lastmod: '2022-12-03'
+tags: ['algorithm', 'math']
 draft: false
-summary: '해쉬과 관련된 leetcode 560번 문제 입니다.'
+summary: '수학과 관련된 백준 1740번 문제 입니다.'
 ---
 
 ![main](/static/leetcode/cover.jpg)
 
 ## 1.문제 설명
 
-배열 nums 과 integer k 가 주어진다. subarray 의 합이 k 가 되는 모든 subarray 의 갯수를 구하시오. subarray 는 연속되고 빈배열이 아닌 배열을 말한다.
+3의 제곱수를 생각하자. 3의 0제곱, 3의 1제곱, 3의 2제곱, ... 은 순서대로 1, 3, 9, 27, ... 이 된다. 이를 바탕으로, 한 개 이상의 서로 다른 3의 제곱수의 합으로 표현되는 수를 생각할 수 있다. 예를 들어 30은 27과 3의 합이므로, 이러한 수에 포함된다. 한 개 이상의 서로 다른 3의 제곱수의 합으로 표현되는 N번째로 작은 수를 구하는 프로그램을 작성하시오
 
 ## 2. 문제 접근
 
-subarray 이기 때문에 처음부터 끝까지 iteration 을 돌려봐야 한다. 예를 들어 nums = [1,2,3], k=3 가정하자.
-hash 를 만들고 각각의 subarray 의 합을 저장해주어야 한다.
+숫자와 관련된 문제는 일단 2가지 경우의 수를 고려해보자
+
+- 2진법 (혹은 n진법)
+- 몫과 나머지의 연관성
+
+이문제는 2진법으로 입력받은 숫자를 변환하고 변환된 이진수의 1로 표기된 부분을 3의 승으로 취해 숫자를 10진법으로 변환시켜주면 된다.
+
+예를들어
 
 ```tsx
 
-hash
-sum = 0
+n = 4
 
+4 -> 100 -> 3**2  = 9
 
-iteration 1 : sum += nums[i] = 1
-iteration 2 : sum += nums[i] = 3 = k
-iteration 3 : sum += nums[i] = 6 != k
+11 -> 1011 -> 3**3 + 3**1 + 3**0 = 31
 
 ```
-
-마지막 iteration 같은 경우 전체합이 6이 된다. 그런데 nums[i] 에 해당하는 값은 3이며 총합 6에서 k를 빼주게 되면 3이된다. 즉 subarray의 각각의 요소의 합을 계속 더해나가되 k 와의 차이를 비교하여 hash 에 존재하게 되면 조건을 충족하게 된다고 이해 하면 된다.
-
-한가지 주의 할 점은 hash 에 초기값으로 key,value 를 0,1로 지정해 주어야 한다. 그렇지 않으면 처음에 한번에 원하는 결과를 얻은 경우를 커버 할 수 없다.
 
 ## 3. 풀이
 
 ```tsx
-var subarraySum = function (nums, k) {
-  let count = 0
-  let sum = 0
-  let hash = new Map()
-  hash.set(0, -1)
-
-  for (let i = 0; i < nums.length; i++) {
-    sum += nums[i]
-    if (hash.has(sum - k)) {
-      count += hash.get(sum - k)
-    }
-    hash.set(sum, hash.get(sum) + 1 || 1)
-  }
-  return count
+function solution(n) {
+  const binaryCode = n.toString(2).split('')
+  return binaryCode.reduce((a, b, index) => {
+    if (b === '1') a += Math.pow(3, binaryCode.length - 1 - index)
+    return a
+  }, 0)
 }
 ```
 
 감사합니다.
 
-#### reference: [leetcode 560. SubArray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/)
+#### reference: [거듭제곱](https://www.acmicpc.net/problem/1740)
