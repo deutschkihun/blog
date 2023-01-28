@@ -1,0 +1,82 @@
+---
+title: '[Stack & Queue] 크레인 인형뽑기 게임'
+date: '2022-12-05'
+lastmod: '2022-12-05'
+tags: ['algorithm', 'stack', 'queue']
+draft: false
+summary: 'stack & queue 크레인 인형뽑기 게임 문제입니다.'
+authors: ['default']
+---
+
+![main](/static/leetcode/cover.jpg)
+
+## 1.문제설명
+
+문제 설명은 링크로 대체하겠습니다.
+
+https://school.programmers.co.kr/learn/courses/30/lessons/64061
+
+## 2.문제 접근
+
+예시로 주어진 배열을 보면 다음과 같다.
+
+```tsx
+;[
+  [0, 0, 0, 0, 0],
+  [0, 0, 1, 0, 3],
+  [0, 2, 5, 0, 1],
+  [4, 2, 4, 4, 2],
+  [3, 5, 1, 3, 1],
+]
+```
+
+이 형태는 배치도를 가로로 구성한 배열이다. 좀 더 뽑기를 쉽게 하기 위해서는 가로 배치를 세로 배치로 바꿔주어야 한다.
+세로 배치로 변경하면 아래와 같을 것이다.
+
+```tsx
+;[
+  [0, 0, 0, 4, 3],
+  [0, 0, 2, 2, 5],
+  [0, 1, 5, 4, 1],
+  [0, 0, 0, 4, 3],
+  [0, 3, 1, 2, 1],
+]
+```
+
+그다음에 stack 의 LIFO (last in first out) 원리를 이용하여 같은 것이 있다면 둘다 제거 하고 2개를 카운팅 올려주면 된다. 만약 배열이 비어있다면 무조건 넣어준다.
+
+## 3.문제풀이
+
+위에서 언급한 문제 해결방법을 코드로 옮겨보면 다음과 같다.
+
+```tsx
+function solution(boards, moves) {
+  let count = 0
+  let stack = Array.from({ length: boards.length }, () => [])
+  let basket = []
+
+  boards.forEach((board, j) => {
+    for (const k in board) {
+      stack[k][j] = board[k]
+    }
+  })
+
+  stack = stack.map((board) => board.filter(Boolean))
+  for (const move of moves) {
+    const first = stack[move - 1].shift()
+    if (first && basket[basket.length - 1] === first) {
+      basket.pop()
+      count += 2
+    } else {
+      basket.push(first)
+    }
+  }
+  return count
+}
+```
+
+감사합니다.
+
+#### reference
+
+- [540. Single Element in a Sorted Array](https://leetcode.com/problems/single-element-in-a-sorted-array/)
