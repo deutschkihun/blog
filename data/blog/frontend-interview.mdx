@@ -729,6 +729,194 @@ arr.forEach((e,i) => {
 list = [3, 4, 2]
 ```
 
+## 10. Map,Set 의 등장 그리고 object
+
+ES6부터 새롭게 등장한 자료구조 형태가 바로 Map 과 Set 이다. Set,Map이 등장하게 된 이유는 무엇일까? 한 3가지 정도로 요약 해볼 수 있다.
+
+- object는 문자열/심볼 만 key 값으로 들어간다. (map,set은 1와 '1'도 구분된다.)
+- 객체의 프로퍼티의 개수를 알아야할경우 object 로 파악하는게 가능하지만 빌트인 함수가 없어서 시간이 오래 걸린다.
+- object는 for of 또는 spread syntax로 접근이 힘들다. (object는 not iterable)
+
+### Map
+
+- Map 은 pair 형태로 unique key 와 key 를 매핑하여 데이터를 저장한다.
+- key는 unique 하기때문에 중복을 허용하지 않는다.
+- Map 의 주요 사용 목적은 빠르게 searching, looking up 하는데 사용된다. 그 이유는 시간복잡도가 O(1) 이기 때문이다. 해당 key 와 그에 매핑된 값이 pair 로 저장되어 있기 때문에 상수시간 만큼 소요된다.
+- 매핑될때 들어가는 key,value 는 어떠한 type 도 허용이 된다.
+- elements 의 순서가 보존된다.
+- map 은 built-in iterable 하다.
+
+```tsx
+Example: {(1, “smile”), (2, “cry”), (42, “happy”)}
+```
+
+위와 같은 형태로 저징이 된다. key 와 value 하나도 묶여 있다. 또한 built-in iterable 하기 때문에 forEach,for..of 같은 것을 바로 사용하는 것이 가능하다.
+
+```tsx
+console.log(typeof map[Symbol.iterator]) //function
+
+//For map: { 2=>3, 4=>5}
+for (const item of map) {
+  console.log(item)
+  //Array[2,3]
+  //Array[4,5]
+}
+//Or
+for (const [key, value] of map) {
+  console.log(`key: ${key}, value: ${value}`)
+  //key: 2, value: 3
+  //key: 4, value: 5
+}
+
+map.forEach((value, key) => console.log(`key: ${key}, value: ${value}`))
+//key: 2, value: 3
+//key: 4, value: 5
+```
+
+### Object
+
+object 는 map 과 상당히 다른 부분이 많이 있다.
+
+- 일단 key,value 쌍으로 저장되는 것은 맞지만 매핑이 되지는 않는다.
+
+```tsx
+Example: {1: ‘smile’, 2: ‘cry’, 42: ‘happy’}
+```
+
+- key 에 integer 와 string 만 허용이된다. map 에서는 어떠한 타입도 다 허용되었던거와는 많은 차이가 있다.
+- elements 의 순서가 보존되지 않는다.
+- Map 은 object 의 instance 이다. 하지만 object 는 map 의 인스턴스가 아니다.
+- Object 는 built-in iterable 하지 않다.
+- Object에서 key를 주로 property 부른다
+- JSON 은 object 를 지원하지만 map 은 지원하지 않는다. 따라서 JSON 형태로 데이터를 다루는 경우(사실 대부분의 경우 서버로부터 데이터를 받아올떄는 JSON 을 사용한다.)
+
+```tsx
+var map = new Map([
+  [1, 2],
+  [3, 4],
+])
+console.log(map instanceof Object) //true
+var obj = new Object()
+console.log(obj instanceof Map) //false
+```
+
+object 는 built-in iterable 하기 않기 때문에 forEach,for..of 을 직접 쓸수 없다. 그래서 for..in 을 사용한다. Object.key(obj) 을 이용해서 iterate 할 수 있다.
+
+```tsx
+
+{id: 1, name: "test"}
+for (var key in obj){
+   console.log(`key: ${key}, value: ${obj[key]}`);
+   //key: id, value: 1
+   //key: name, value: test
+}
+
+Object.keys(obj).forEach((key)=> console.log(`key: ${key}, value: ${obj[key]}`));
+//key: id, value: 1
+//key: name, value: test
+```
+
+### Set
+
+Set은 중복을 허용하지 않는 데이터 집합을 찾고 싶을 때 사용한다.
+Set을 사용하면 데이터에 빠르게 엑세스 할 수 있다.
+1와 '1'은 다른것으로 간주 즉, 중복을 확인하기 위해 강제적으로 자료형을 변형하지 않는다.
+forEach(callback(value,key,set)[, thisArg]), for of 로 값에 접근가능하다.
+
+### Map 와 Set 을 배열화 하기
+
+spread operator 를 사용하세요
+
+```tsx
+
+const set = new Set()
+set.add(1)
+const map = new Map()
+map.set(0,1)
+
+console.log([...set,...map)
+
+```
+
+### Map.prototype.entries / Set.prototype.entries
+
+JavaScript Map.entries() 메서드는 맵의 각 요소의 [key, value] 쌍을 모두 포함하는 반복기 개체를 반환하는 데 사용됩니다. map의 모든 요소의 [키, 값] 쌍을 삽입 순서대로 반환합니다
+
+```tsx
+const map = new Map()
+map.set('abc', 'bfew')
+map.set('bbb', 'forty two')
+map.set(43, 33)
+map.set(44, 131)
+
+const iterator1 = map.entries()
+
+console.log(iterator1.next().value) // ["abc", "bfew"]
+console.log(iterator1.next().value) // ["bbb", "forty two"]
+
+for (const entry of iterator1) {
+  console.log(entry)
+  // Expected output: Array [43, 43]
+  // Expected output: Array ["44", "131"]
+}
+```
+
+Set.prototype.entries() 메소드는 Set 객체의 각각의 요소를 삽입순서대로 [값, 값]의 형태로 가진 배열의 새로운 Iterator 객체를 반환합니다. Set객체에는 Map객체의 key가 없습니다. 그러나, Map 객체의 API와 비슷하게 유지하기 위해, 각각의 "요소"는 "키"와 "값" 자리에 같은 값을 가지게 됩니다. 결과적으로 [값, 값] 형태의 배열이 반환되게 됩니다.
+
+```tsx
+const set1 = new Set()
+set1.add(42)
+set1.add('forty two')
+set1.add(43)
+set1.add(44)
+
+const iterator1 = set1.entries()
+
+console.log(iterator1.next().value) // [42, 42]
+console.log(iterator1.next().value) // ["forty two", "forty two"]
+
+for (const entry of iterator1) {
+  console.log(entry)
+  // Expected output: Array [43, 43]
+  // Expected output: Array ["44", "44]
+}
+```
+
+핵심적인 특징은 한번 지난 것은 다시 불러오는 것이 안된다. 위의 예시에서 보면 4개의 데이터를 저장했다. 그리고 next().value 를 찍어서 처음 데이터를 가져옴, 그리고 같은 것을 반복하면 그 다음것이 출력됨. 그리고 나머지 2개(43,44) 는 for..of 로 출력했다.
+
+### Object 와 Map 의 호환
+
+둘은 호환이 가능하다. fromEntries() & entries() 를 이용해서 호환할 수 있다.
+
+```tsx
+
+1. Object.entries(obj): object -> map
+
+let obj = {
+  name: 'John',
+  age: 30,
+}
+
+let map = new Map(Object.entries(obj))
+
+alert(map.get('name')) // John
+```
+
+```tsx
+2. Object.fromEntries(map.entries()): map -> object
+let map = new Map()
+map.set('banana', 1)
+map.set('orange', 2)
+map.set('meat', 4)
+
+let obj = Object.fromEntries(map.entries()) // 맵을 일반 객체로 변환 (*)
+
+// 맵이 객체가 되었습니다!
+// obj = { banana: 1, orange: 2, meat: 4 }
+
+alert(obj.orange) // 2
+```
+
 # JavaScript 로 구현한 알아두면 유용한 로직
 
 ## 1. Combination (조합)
@@ -1526,5 +1714,6 @@ Element in same types: 변경된 요소의 유형이 동일하면 React는 두 �
 
 - [자바스크립트 this 총정리](https://nykim.work/71)
 - [diffing algorithm](https://www.geeksforgeeks.org/what-is-diffing-algorithm/)
+- [Set,Map,Object 정리](https://medium.com/front-end-weekly/es6-map-vs-object-what-and-when-b80621932373) -[javascript-info](https://ko.javascript.info/)
 
 감사합니다.
