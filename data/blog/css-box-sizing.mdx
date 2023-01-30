@@ -1,0 +1,72 @@
+---
+title: '[CSS] Box-sizing'
+date: '2023-01-03'
+lastmod: '2023-01-03'
+tags: ['css', 'box-sizing']
+draft: false
+summary: 'CSS 의 수많은 속성들 중에 가장 기본으로 들어가지만 생각외로 잘 신경쓰지 않는 부분이 있으니 그것은 바로 box-sizing 이다. 이번 포스팅을 통해 box-sizing 에 대해 알아보자'
+---
+
+![main](/static/css/cover.png)
+
+CSS 의 수많은 속성들 중에 가장 기본으로 들어가지만 생각외로 잘 신경쓰지 않는 부분이 있으니 그것은 바로 box-sizing 이다. 이번 포스팅을 통해 box-sizing 에 대해 알아보자
+
+## 1. Box-sizing
+
+box-sizing은 박스의 크기를 어떤 것을 기준으로 계산할지를 정하는 속성이다. default 는 content-box 이다.
+
+- content-box : 콘텐트 영역을 기준으로 크기를 정한다.
+- border-box : 테두리를 기준으로 크기를 정한다.
+- initial : 기본값으로 설정한다.
+- inherit : 부모 요소의 속성값을 상속받는다.
+
+## 2.예시
+
+```tsx
+<div class="content">
+    <p>content-box</p>
+</div>
+<div class="box">
+    <p>border-box</p>
+</div>
+```
+
+```tsx
+body {
+    margin: 0px;
+}
+
+div {
+    margin: 20px;
+    padding: 20px;
+    border: 20px solid #dddddd;
+    width: 500px;
+}
+
+.content {
+    box-sizing: content-box;
+}
+
+.box {
+    box-sizing: border-box;
+}
+```
+
+둘 다 width 값을 500px로 정하였으나, box-sizing 속성값에 따라 크기기 달라진다.
+
+첫 번째 박스는 콘텐트 영역이 500px이고 테두리를 포함한 크기는 580px이다. margin left 와 right 각각 20px 그리고 padding left 와 right 가 각각 20px 이다. (500+20x2+20x2 = 580)
+
+하지만 두 번째 박스는 테두리를 포함한 크기가 500px이고, 콘텐트 영역의 크기는 420px이다. margin left 와 right 각각 20px 그리고 padding left 와 right 가 각각 20px 이다. (500-(20x2+20x2) = 420)
+
+위의 코드를 실행시키면 아래와 같다
+
+![main](/static/css/example.png)
+
+이렇게 같은 코드라도 box-sizing 을 어떻게 설정하는냐에 따라 다른 결과가 나오게 된다.
+
+감사합니다.
+
+#### reference:
+
+- [CSS / box-sizing / 박스의 크기를 어떤 것을 기준으로 계산할지를 정하는 속성](https://www.codingfactory.net/10630)
+- [생활코딩 box-sizing](https://opentutorials.org/course/2418/13405)
