@@ -1415,6 +1415,38 @@ console.log(JSON.stringify(arr1) === JSON.stringify(arr2))
 console.log(arr1.join('') === arr2.join(''))
 ```
 
+## 15.Union & Intersecrtion & Difference
+
+### Union
+
+```tsx
+let a = new Set([1, 2, 3])
+let b = new Set([4, 3, 2])
+let union = new Set([...a, ...b])
+console.log(union)
+// {1,2,3,4}
+```
+
+### Intersecrtion
+
+```tsx
+let a = new Set([1, 2, 3])
+let b = new Set([4, 3, 2])
+let intersection = new Set([...a].filter((x) => b.has(x)))
+console.log(intersection)
+// {2,3}
+```
+
+### Difference
+
+```tsx
+let a = new Set([1, 2, 3])
+let b = new Set([4, 3, 2])
+let difference = new Set([...a].filter((x) => !b.has(x)))
+console.log(difference)
+// {1}
+```
+
 # React
 
 ## 1. react 란?
