@@ -37,8 +37,7 @@ MVC 의 Controller 가 담당했던 기능들을 (ex. dom manipulation) 이제�
 
 ## 4. Component (컴포넌트)
 
-서비스가 고도화 되면서 MVVM 에서 화면만 다루던 단계에서 조금 더 작게 재사용 할 수 있는 단위로 만들어서 조립하는 방식으로 발전하게 되며 그것을 component 라고 한다.
-component 의 기본원칙은 범용성이 있어야 하고 재사용을 원칙으로 한다. component 에서 대표적으로 많이 사용하는 디자인 패턴에는 presentational and container component pattern 이 있다.
+재사용 할 수 있는 작은 단위로 분리해서 조립하는 방식으로 MVVM 을 구성하는 것을 component 라고 한다. component 의 기본원칙은 범용성이 있어야 하고 재사용을 원칙으로 한다. component 에서 대표적으로 많이 사용하는 디자인 패턴에는 presentational and container component pattern 이 있다.
 
 이 패턴의 치명적인 단점은 container component 에서 presentational component 로 props 넘기게 되는데 만약 presentational component 가 1개가 아니라 여러 layer 로 구성되어 있다면 props 를 사용하지 않는 부모 presentational component 로 props 를 받아서 하위 presentational component 로 넘겨주어야한다. 이러한 문제를 props drilling problem 이라고 한다.
 
