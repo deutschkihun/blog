@@ -216,30 +216,12 @@ let bar = 'bar2' // syntax error: identifier bar has already been declared
 
 ## 5. AJAX
 
-자바스크립트를 이용해 서버와 브라우저가 비동기 방식으로 데이터를 교환할 수 있는 통신 기능을 말한다. 단순하게 WEB화면에서 무언가 부르거나 데이터를 조회하고 싶을 경우, 페이지 전체를 새로고침하지 않기 위해 사용 (because of connectionless and stateless).
+자바스크립트를 이용해 서버와 브라우저가 비동기 방식으로 데이터를 교환할 수 있는 통신 기능을 말한다. AJAX는 HTML 페이지 전체가 아닌 일부분만 갱신할 수 있도록 비동기 API인 XMLHttpRequest객체를 통해 서버에 request한다. 페이지의 일부만 갱신 할 수 있기 때문에 페이지 전체를 갱신하지 않아도 되서 자원낭비와 시간방비를 줄일 수 있다.
 
-그래서 화면의 내용을 갱신하기 위해서는 다시 request를 하고 response를 하며 페이지 전체를 갱신하게 된다. 하지만 이렇게 할 경우, 엄청난 자원낭비와 시간낭비를 초래한다.
-AJAX는 HTML 페이지 전체가 아닌 일부분만 갱신할 수 있도록 XMLHttpRequest객체를 통해 서버에 request한다. 이 경우, JSON이나 XML형태로 필요한 데이터만 받아 갱신하기 때문에 그만큼의 자원과 시간을 아낄 수 있다.
+AJAX 를 통해 비동기 API 통신을 하는 방법에는 XMLHttpRequest 와 fetch 가 있다.
 
-**하지만 이제 XMLHttpRequest 보다는 Promise 객체기반의 fetch 나 axios 를 더 많이 사용한다.**
-
-- AJAX 는 jQuery 를 사용해야 간편하고 호환성이 보장된다.
-
-  > 허나 MVVM 아키텍처가 도입되면서 기본의 mvc 에서 controller 의 부분을 담당했던 jQuery 역할이 사라지고 ViewModel 로 통합되면서 view 와 model 간의 작업을 react 와 같은 라이브러리가 대체하게 된다.
-
-  > 이러면서 XMLHTTPRequest 기반으로 통신하는 방식보다는 다른 방식을 더 많이 사용한다.
-
-- fetch 는 es6 부터 등장한 javascript 내장라이브러리
-
-  > promise 객체 기반으로 작업 가능. 기존 promise 가 제공하는 기능 사용가능 및 에러 핸들링 용이하다. 다만 json 형태의 변환과정이 필요함
-
-- axios 는 nodejs 가 브라우저와 통신을 하기 위해 만들어진 Promise API를 활용하는 HTTP 통신 라이브러리
-
-  > response timeout (fetch에는 없는 기능) 처리 방법이 존재
-
-  > 브라우저 호환성이 뛰어남
-
-  > 다만 설치 필수
+- XMLHttpRequest : 전통적인 이벤트 통신기반, 브라우저간 기능불일치, 코드가 긴편
+- fetch : promise 기반, 브라우저에 내장되어 기능일치, 코드가 간편함, ES6 미지원 브라우저는 사용불가
 
 ## 6. call stack
 
@@ -279,6 +261,32 @@ baz()
 ![callstack4](/static/interview/callstack4.png)
 
 이처럼 foo 가 가장위 그다음에 bar 그다음에 baz 가 나온것을 확인 할 수 있다.
+
+## 7.변수와 상수의 차이
+
+- 변수는 값이 변경되는 어떠한 값
+- 상수는 값이 변경되지 않는 어떠한 값
+- 변수와 상수는 메모리상에 값을 저장한다.
+- 메모리(RAM)상에 어떤 값을 저장하게 되면 해당 공간에 우리가 선언한 변수나 상수의 이름을 메모리의 특정공간에 주소값을 부여하게 됩니다.
+- 서버에서 실행 되는 언어(Java, Go등)들은 서버의 메모리를 사용하며, 클라이언트에서 실행되는 언어(Javascript, C#등)들은 클라이언트의 메모리를 사용합니다.
+
+## 8.Javascript 에서 function 혹은 class는 변수로 선언하기
+
+Javascript 관점에서 function 혹은 class 는 변수가 맞다.
+
+- function test(){}; 은 var test = function(){}; 과 같습니다.
+- 임의의 함수를 생성한 뒤 Chrome console에 함수명만 타이핑해보면 함수의 객체를 확인할 수 있습니다.
+
+## 9. 반복문 while, for, foreach, do while 의 속도 비교
+
+while >= for >>>> do while >>>> foreach
+//for와 while 모두 정답으로 처리된 문제입니다.
+//참고로 "통상적인" 단순 반복문에서의 속도를 묻는 문제입니다.
+
+for : 반복횟수를 정확하게 명시하고 동작하는 반복문이며 OOP가 나오기전까지 가장 많이 사용한 반복문입니다.
+while : 조건을 부여하여 조건이 만족될때까지 반복합니다. 제일 빠른 반복문이지만, 잘못된 코드로 인해 무한루프에 빠질 수 있습니다.
+do while : for문과 while문이 병합된 형태이며, 손쉽게 사용할 수 있지만, for문과 while문에 비해 속도가 느린 반복문입니다.
+foreach : OOP환경에서 굉장히 사용하기 좋은 반복문이며, while문과 같이 무한루프에 빠질염려가 없지만 제일 느린 반복문입니다.
 
 # JavaScript 심화
 
