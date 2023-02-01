@@ -1,0 +1,71 @@
+---
+title: '[Recursion] LeetCode 17번 Letter Combinations of a Phone Number'
+date: '2023-01-11'
+lastmod: '2023-01-11'
+tags: ['algorithm', 'recursion', 'leetcode']
+draft: false
+summary: 'recursion 관련된 leetcode 17번 문제 입니다.'
+---
+
+![main](/static/leetcode/cover.jpg)
+
+## 1.문제 설명
+
+digit 이 문자열로 주어진다. 각 digit 에 해당하는 char로 구성 할 수 있는 모든 문자열을 만들어라.
+
+## 2. 문제 접근
+
+숫자 리스트는 다음과 같다
+
+```tsx
+const list = {
+  2: ['a', 'b', 'c'],
+  3: ['d', 'e', 'f'],
+  4: ['g', 'h', 'i'],
+  5: ['j', 'k', 'l'],
+  6: ['m', 'n', 'o'],
+  7: ['p', 'q', 'r', 's'],
+  8: ['t', 'u', 'v'],
+  9: ['w', 'x', 'y', 'z'],
+}
+```
+
+재귀적으로 해당 문자열에 해당하는 숫자등을 쭉 나가면서 길이가 digit 과 같아지는 시점까지 계속해서 재귀함수를 호출 하면 된다.
+
+## 3. 풀이
+
+```tsx
+var letterCombinations = function (digits) {
+  if (!digits.length) return []
+  const list = {
+    2: ['a', 'b', 'c'],
+    3: ['d', 'e', 'f'],
+    4: ['g', 'h', 'i'],
+    5: ['j', 'k', 'l'],
+    6: ['m', 'n', 'o'],
+    7: ['p', 'q', 'r', 's'],
+    8: ['t', 'u', 'v'],
+    9: ['w', 'x', 'y', 'z'],
+  }
+
+  let result = []
+
+  function permute(str, index) {
+    if (digit.length === index) {
+      result.push(str)
+      return
+    }
+
+    for (let item of list[digit[index]]) {
+      permute(str + item, index + 1)
+    }
+  }
+
+  permute('', 0)
+  return result
+}
+```
+
+감사합니다.
+
+#### reference: [leetcode 1460. Make Two Arrays Equal by Reversing Subarrays](https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays)
