@@ -12,13 +12,7 @@ authors: ['default']
 
 software engineer 라면 반드시 알아야 할 데이터베이스 기초 지식 포스팅
 
-## 1.데이터베이스의 성능
-
-데이터베이스의 성능 이슈는 디스크 I/O (input/output) 를 어떻게 줄이느냐에서 시작된다. 디스크 I/O 란 디스크 드라이브의 플래터(원판)을 돌려서 읽어야 할 데이터가 저장된 위치로 디스크 헤더를 이동시킨 다음 데이터를 읽는 것을 의미한다. 이 때 데이터를 읽는데 걸리는 시간은 디스크 헤더를 움직여서 읽고 쓸 위치로 옮기는 단계에서 결정된다. **즉 디스크의 성능은 디스크 헤더의 위치 이동 없이 얼마나 많은 데이터를 한 번에 기록하느냐에 따라 결정된다고 볼 수 있다.**
-
-그렇기 때문에 순차 I/O 가 랜덤 I/O 보다 빠를 수 밖에 없다. 하지만 현실에서는 대부분의 I/O 작업이 랜덤 I/O 이다. **랜덤 I/O 를 순차 I/O 로 바꿔서 실행할 수는 없을까? 이러한 생각에서부터 시작되는 데이터베이스 쿼리 튜닝은 랜덤 I/O 자체를 줄여주는 것이 목적이라고 할 수 있다.**
-
-## 2.Index
+## 1.Index
 
 | first_name | age |
 | :--------: | :-: |
@@ -46,7 +40,7 @@ software engineer 라면 반드시 알아야 할 데이터베이스 기초 지�
 
 위처럼 하나의 노드에 값을 저장하는 것이 아니라 특정 조건을 넣어주고 탐색을 할 때 조건의 가이드라인에 따라 데이터를 빠르게 탐색할 수 있게 된다. 또한 최하위 자식노드에는 한개의 데이터가 아닌 어려개의 데이터 저장을 가능하게 설계 할 수 도 있다.
 
-## 3.정규화(Normalization)
+## 2.정규화(Normalization)
 
 - 하나의 Relation이 여러 entity의 attribute들을 혼합하게 되면 정보가 중복 저장되며,공간 낭비 발생.
 - 복된 정보로 인해 갱신 이상이 발생하게 된다. 동일한 정보를 한 릴레이션에는 변경하고, 나머지 릴레이션에서는 변경하지 않은 경우 어느 것이 정확한지 알 수 없게 되는 것이다.
@@ -291,13 +285,13 @@ software engineer 라면 반드시 알아야 할 데이터베이스 기초 지�
 
 아래의 링크로 대체합니다.
 
-### https://sql-joins.leopard.in.ua/
+#### https://sql-joins.leopard.in.ua/
 
-## 9.SQL Basicc
+## 9.SQL Basic
 
 아래의 링크로 대체합니다.
 
-### https://s3.amazonaws.com/assets.datacamp.com/email/other/SQL+for+Data+Science.pdf
+#### https://s3.amazonaws.com/assets.datacamp.com/email/other/SQL+for+Data+Science.pdf
 
 ## reference
 
