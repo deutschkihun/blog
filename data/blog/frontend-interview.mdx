@@ -1,7 +1,7 @@
 ---
 title: '프론트앤드 엔지니어를 위한 기술인터뷰 준비'
-date: '2022-09-12'
-lastmod: '2022-09-12'
+date: '2023-01-31'
+lastmod: '2023-01-31'
 tags: ['frontend engineer', 'frontend developer', 'technical interview']
 draft: false
 summary: '이 포스팅에서는 프론트앤드 개발자가 들이기술인터뷰를 준비하면서 알아야 하는 내용들을 정리한 포스팅 입니다. 구체적으로 자바스크립트 기초,심화 및 리액트와 관련된 내용이 들어가 있습니다.'
@@ -924,6 +924,25 @@ let obj = Object.fromEntries(map.entries()) // 맵을 일반 객체로 변환 (*
 
 alert(obj.orange) // 2
 ```
+
+## 11. npm vs yarn
+
+npm 과 yarn 의 차이를 아시나요? 둘다 자바스크립트 패키지 매니저 (Javascript Package Manager) 로 잘 알려져 있습니다. 둘다 결과적으로 필요한 패캐지들을 불러오는 역할을 하는데 어떠한 차이가 있는지 아는 것이 중요합니다.
+
+### 속도
+
+- npm은 필수 단계를 순차적으로 수행, 다음 패키지로 넘어가기 전에 각 패키지를 완전히 설치해야 한다고 한다. 이러한 문제는 npm 6이상에서 보완되어 yarn 과 비슷한 성능을 보여줌
+- yarn은 동시에 여러 패키지들을 설치할 수 있기 때문에 속도 면에서 크게 향상된다는 것이다.
+
+### 의존성
+
+- npm은 의존 관계를 가지는 패키지들을 추가적으로 가져와 모두 포함하여 설치한다.
+- yarn은 yarn.lock이나 package.json 파일에 있는 것들만 설치를 한다. 즉 모든 설치 환경에 같은 패키지 설치를 보장해주어 서로다른 환경마다 설치하면서 발생하는 버그를 줄여준다.
+
+### 패키지 잠금 파일
+
+- npm => package-lock.json
+- yarn => yarn.lock
 
 # JavaScript 로 구현한 알아두면 유용한 로직
 
