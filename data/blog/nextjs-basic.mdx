@@ -1,27 +1,222 @@
 ---
-title: '[NextJS] Next JS Fundamentals'
+title: '[Next.js] Next.js Fundamentals'
 date: '2023-02-11'
 lastmod: '2023-02-11'
 tags: ['nextjs']
 draft: false
-summary: 'nextjs 를 시작하기 위해 알아야 하는 기초 지식 정리 포스팅'
+summary: 'nextjs 를 시작하기 위해 알아야 하는 기초 지식 정리 포스팅. 기존의 create-react-app 을 next.js 기반으로 migration 해보면서 기존의 기능들이 next.js 에서 어떤 식으로 변형되어서 동작하지는지에 대한 자세한 이해와 원리를 공부 할 수 있는 포스팅 입니다'
 ---
 
 ![main](/static/leetcode/cover.jpg)
 
-## 1. NextJS 프레임 워크 구조
+nextjs 를 시작하기 위해 알아야 하는 기초 지식 정리 포스팅. 기존의 create-react-app 을 next.js 기반으로 migration 해보면서 기존의 기능들이 next.js 에서 어떤 식으로 변형되어서 동작하지는지에 대한 자세한 이해와 원리를 공부 할 수 있는 포스팅 입니다
 
-정적인 파일들은 기본적으로 public folder 에서 관리. 에를 들면 png,svg 등등
+## 포스팅을 시작하기 전에
 
-turbo run dev / turbo run start
+next.js 에 대해 알기 위해서는 react 와 next.js 의 차이를 아는 것이 중요하다.
 
-next dev / next start
+- **React** 는 javascript 라이브러리이다. 라이브러리 이기 때문에 제어의 주도권을 사용하는 사람이 가지고 있다. 기존에 react 에서 제공하는 기능들을 가져다가 자유롭게 커스텀하여 사용할 수 있다. React 를 사용하는 주된 목적은 인터엑티브한 유저 인터페이스를 만드는데 있다. 여기서 유저 인터페이스라고 하면 유저들이 화면상에 보는 모든 부분을 이야기 한다.
 
-`npx create-next-app nextjs-blog --use-npm --example "https://github.com/vercel/next-learn/tree/master/basics/learn-starter"`
+- **Next.js** 는 React 프레임워크입니다. 프레임워크이기 때문에 **제어의 주도권을 사용하는 사용하는 측에서 가지고 있지 않다. 즉 개발자가 가지고 있지 않다는 의미이다**. 이를 제어의 역전이라고 말하는데 Next.js 에서 제공하는 구조와 틀에 맞춰서 작업을 해주어야 한다. Next.js 를 사용하는 주된 목적은 리액트에 필요한 툴과 설정들을 제공하고 다양한 최적화기능,구조화 및 편의 기능들을 제공한다.
+
+## 1. From React to Next.js
+
+기존에 작업하던 React 코드를 만약 Next.js 기반으로 작업해야 한다면 어떻게 해야 할까? 사실 기본적으로 수많은 boilerplate 가 존재하기 때문에 잘 만들어진 next.js & react 프로젝트를 찾아서 거기에 새로 작업하는 것도 나쁘지 않은 선택이다.
+
+- `npx create-next-app precedent --example "https://github.com/steven-tey/precedent"`
+- `npx create-next-app nextjs-blog --use-npm --example "https://github.com/vercel/next-learn/tree/master/basics/learn-starter"`
+- `git clone git@github.com:vercel/commerce.git`
+- `yarn create next-app [project name] –typescript`
+
+예를 들면 위와 같은 프로젝트들은 처음에 시작하기에 나름 괜찮은 boilerplate 이다. 하지만 from scratch 부터 작업 하는 것이 아니기 때문에 정확한 동작에 대한 이해가 부족 할 수 있다. 그래서 React 프로젝트중 가장 유명한 boilerplate 인 create-react-app 프로젝트를 next.js 기반으로 동작 할 수 있게끔 migration 해보면서 작동 원리에 대해 이해햐는 시간을 가져보겠습니다.
+
+### Migrating from Create React App ([공식문서 참조](https://nextjs.org/docs/migrating/from-create-react-app))
+
+1. package.json 안에 있는 실행 명령들을 전부 `next` 기반으로 수정 해주어야 합니다.
+
+```tsx
+$ yarn add next
+$ yarn remove react-scripts
+```
+
+CRA (create-react-app) 프로젝트 에서는 react-scripts 명령을 기반으로 동작한다. 이제 더이상 사용안하기 때문에 삭제하면된다.
+
+```tsx
+"scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build",
+},
+```
+
+여기서
+
+- next dev: development 환경에서 앱 실행
+- next start: production 환경에서 앱 실행 next start 가 제대로 적용 된 것을 확인하기 위해서는 항상 `next build` 를 해주어야 한다.
+
+최신 boilerplate 나 프로젝트들을 보면 `turbo` 를 이용하여 monorepo 관리해주는 방식으로 명령을 지정해주는 경우도 많이 있다. 이 경우는 일단 next 기반으로 migration 하는 게 목적이기 때문에 `turbo` 를 사용하지는 않겠습니다.
+
+2. gitignore 파일 설정
+
+그리고 나서 추가적으로 next 기반으로 프로젝트를 실행할 것 이기 때문에 next 로 빌드된 내용들을 remote repository 로 올리기 않기 위해 `.gitigonre` 설정을 따로 해주면 된다.
+
+```tsx
+// .gitignore
+.next
+```
+
+3. 정적파일 위치 변경 및 pages/\_document.js 파일 설정 ([Custom Document](https://nextjs.org/docs/advanced-features/custom-document))
+
+next.js 프로젝트에서 기본적으로 정적인 파일들은 전부 public 에서 관리해준다. 예를 들면 svg,png 와 같은 assets 들이 여기에 포함된다. 이러한 파일들을 전부 public 폴더 안으로 이동 시켜준다. 현재 CRA 프로젝트로 만들었을때 제공되는 파일들중 public 에 들어가야 하는 파일은 `logo.svg` 정도 이다.
+
+react 기반의 프로젝트에서 document 는 index.html 에서 관리가 된다. next.js 에서는 `pages/_document.js` 혹은 `pages/_document.tsx` 에서 아래와 같이 관리해주면된다.
+
+```tsx
+import { Html, Head, Main, NextScript } from 'next/document'
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head>
+        <meta charSet="utf-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/logo192.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  )
+}
+```
+
+`index.html` 에서 html 구조를 가져올때 아마 `PUBLIC_URL` 이 경로에 들어가 있을텐데, 이제는 root 에서 처리해주기 때문에 필요가 없다.
+
+4. pages/\_app.js 만들기 ([Custom App](https://nextjs.org/docs/advanced-features/custom-app))
+
+Next.js는 App component를 사용하여 페이지를 초기화합니다. 이를 재정의하고 페이지 초기화를 제어할 수 있으며 다음과 같은 기능들을 수행할 수 있습니다:
+
+- 페이지 변경 간 레이아웃 유지 (Persist layouts between page changes)
+- 페이지 탐색 시 상태 유지 (Keeping state when navigating pages)
+- 페이지에 추가 데이터 삽입 (Inject additional data into pages)
+- 글로벌 CSS 추가 (Add global CSS)
+
+```tsx
+import Head from 'next/head'
+import '../styles/global.css'
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Head>
+        <title>React App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="description" content="Web site created using create-react-app" />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  )
+}
+
+export default MyApp
+```
+
+만약 typescript 로 작성하신다면 타입을 추가해주셔야 합니다.
+
+```tsx
+import type { AppProps } from 'next/app'
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
+}
+```
+
+5. pages/index.js (index.tsx) 만들기
+
+기존에 src 폴더안에 App.js 안의 코드들은 이제 next.js 에서 index.js 로 들어가게된다. 이때 주의 해야 할 것은 파일 위치가 달라지기 때문에 import 하는 경로도 맞게 수정해주어야 한다.
+
+추가적으로 다음과 같은 기능을 구현하려고 한다면 next.js 는 친절하게도 기본적으로 다 제공해준다.
+
+- css,sass,assets 들을 위한 file-loader
+- polyfill
+- code splitting
+- postcss setup
+- babel config / webpack config
 
 ## 2. NextJS Data Fetching
 
 ## 3. Layout Pages & Images
+
+# Introduction
+
+The tailwind starter blog has out of the box support for [Next.js's built-in image component](https://nextjs.org/docs/api-reference/next/image) and automatically swaps out default image tags in markdown or mdx documents to use the Image component provided.
+
+# Usage
+
+To use in a new page route / javascript file, simply import the image component and call it e.g.
+
+```js
+import Image from 'next/image'
+
+function Home() {
+  return (
+    <>
+      <h1>My Homepage</h1>
+      <Image src="/me.png" alt="Picture of the author" width={500} height={500} />
+      <p>Welcome to my homepage!</p>
+    </
+  )
+}
+
+export default Home
+```
+
+For a markdown file, the default image tag can be used and the default `img` tag gets replaced by the `Image` component in the build process.
+
+Assuming we have a file called `ocean.jpg` in `data/img/ocean.jpg`, the following line of code would generate the optimized image.
+
+```
+![ocean](/static/images/ocean.jpg)
+```
+
+Alternatively, since we are using mdx, we can just use the image component directly! Note, that you would have to provide a fixed width and height. The `img` tag method parses the dimension automatically.
+
+```js
+<Image alt="ocean" src="/static/images/ocean.jpg" width={256} height={128} />
+```
+
+_Note_: If you try to save the image, it is in webp format, if your browser supports it!
+
+![ocean](/static/images/ocean.jpeg)
+
+<p>
+  Photo by [YUCAR
+  FotoGrafik](https://unsplash.com/@yucar?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
+  on
+  [Unsplash](https://unsplash.com/s/photos/sea?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
+</p>
+
+# Benefits
+
+- Smaller image size with Webp (~30% smaller than jpeg)
+- Responsive images - the correct image size is served based on the user's viewport
+- Lazy loading - images load as they are scrolled to the viewport
+- Avoids [Cumulative Layout Shift](https://web.dev/cls/)
+- Optimization on demand instead of build-time - no increase in build time!
+
+# Limitations
+
+- Due to the reliance on `next/image`, unless you are using an external image CDN like Cloudinary or Imgix, it is practically required to use Vercel for hosting. This is because the component acts like a serverless function that calls a highly optimized image CDN.
+
+  If you do not want to be tied to Vercel, you can remove `imgToJsx` in `remarkPlugins` in `lib/mdx.js`. This would avoid substituting the default `img` tag.
+
+  Alternatively, one could wait for image optimization at build time to be supported. A different library, [next-optimized-images](https://github.com/cyrilwanner/next-optimized-images) does that, although it requires transforming the images through webpack which is not done here.
+
+- Images from external links are not passed through `next/image`
+- All images have to be stored in the `public` folder e.g `/static/images/ocean.jpeg`
 
 ## 4. Routing & Shallow Routing
 
@@ -32,3 +227,7 @@ next dev / next start
 #### reference: [leetcode 1460. Make Two Arrays Equal by Reversing Subarrays](https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays)
 
 https://engineering.linecorp.com/ko/blog/monorepo-with-turborepo/
+
+https://nextjs.org/docs/migrating/from-create-react-app
+
+https://nextjs.org/docs/migrating/from-create-react-app
