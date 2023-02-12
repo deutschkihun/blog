@@ -146,23 +146,111 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 - postcss setup
 - babel config / webpack config
 
-### Migrating from React Router
+## 2. Next.js Data Fetching
 
-CRA 로 만든 프로젝트를 next.js 로 변경 했다면 이제 react-router 로 라우팅을 했던 방식을 next.js 의 파일구조 방식으로 변경 해보려고 한다.
+Next.js 에서 data fetching 하는 방법에는 크게 3가지 방법이 존재한다.
 
-## 2. NextJS Data Fetching
+- SSR (Server-Side Rendering): 요청 타임에 pre-render
+- SSG (Static Site Generation): 빌트 타임에 pre-render
+- ISR (Incremental Static Generation): 빌트 타임에 pre-render
 
-## 3. Layout Pages & Images
+이 3가지 방법이 기존의 CSR (client-side rendering) 과 어떻게 다른지 알아보는게 중요하다. 일단 Next.js 를 사용하게 되면 pre-render 라는 작업을 통해 html 를 서버에서 만든다. 그리고 만든 html 을 js 를 chunk 단위로 로드해서 앱이 동작하게되는데 이 앱이 동적으로 움직이냐 정적으로 움직이냐에 따라 data-fetching 하는 방법이 달라진다.
 
-# Introduction
+### SSR data fetching: getServerSideProps
 
-The tailwind starter blog has out of the box support for [Next.js's built-in image component](https://nextjs.org/docs/api-reference/next/image) and automatically swaps out default image tags in markdown or mdx documents to use the Image component provided.
+```tsx
+export async function getServerSideProps() {
+  console.log('ssr')
+  return {
+    props: { time: new Date().toISOString() },
+  }
+}
 
-# Usage
+export default function Home({ time }: { time: string }) {
+  return <div>{time}</div>
+}
+```
 
-To use in a new page route / javascript file, simply import the image component and call it e.g.
+위의 코드를 실행해보면 일단 중요한 사실은 ssr 을 이용하면 콘솔이 서버에 찍힌다. 그리고 time 은 reload 할때마다 해당 시점에 맞는 time이 입력에 찍힌다. 즉 ssr 은 동적인 페이지에 적합하다.
 
-```js
+### SSG data fetching: getStaticProps vs getStaticPath
+
+SSG 는 뜻을 해석하면 정적페이지 생성이다. 즉 데이터가 동적으로 변하지 않는다는 의미이다.
+
+```tsx
+export async function getStaticProps() {
+  console.log('ssg')
+  return {
+    props: { time: new Date().toISOString() },
+  }
+}
+
+export default function SSG({ time }: { time: string }) {
+  return <div>{time}</div>
+}
+```
+
+- SSG 는 built-time 에서 페이지를 생성하기 때문에 빌드 시점의 데이터가 찍히게 된다. 그리고 화면상에 데이터를 동적으로 변하지 않는다.
+- SSG 의 작동을 제대로 확인하려면 `yarn build` 후 `yarn start` 로 확인해야 한다. `yarn dev` 에서 나오는 결과는 정확한 결과가 아니다.
+
+만약 정적페이지에서 slug 를 이용해서 파일 구조를 동적으로 수정하고 파일명을 데이터로 받아서 사용해야 하는 경우에 getStaticPath 를 사용 할 수 있다.
+
+```tsx
+// pages/posts/[id].js
+
+// Generates `/posts/1` and `/posts/2`
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: '1' } }, { params: { id: '2' } }],
+    fallback: false, // can also be true or 'blocking'
+  }
+}
+
+// `getStaticPaths` requires using `getStaticProps`
+export async function getStaticProps(context) {
+  return {
+    // Passed to the page component as props
+    props: { post: {} },
+  }
+}
+
+export default function Post({ post }) {
+  // Render post...
+}
+```
+
+정리하자면
+
+- page 내용물이 외부 데이터에 의존적인 상황: getStaticProps 만으로 해결 가능
+- page 내용물 뿐만 아니라 page path 까지 외부 데이터에 의존적: getStaticProps + getStaticPath
+
+### SSG data fetching: getStaticProps + revalidation
+
+만약 SSG 임에도 불구하고 데이터를 특정 시간 텀으로 변화된 값을 주입해주고 싶다면 revalidation 옵션을 추가해주면 된다.
+
+```tsx
+export async function getStaticProps() {
+  console.log('isr')
+  return {
+    props: { time: new Date().toISOString() },
+    revalidate: 10,
+  }
+}
+```
+
+공통적으로 getStaticProps 안에서 찍은 로그는 전부 서버에 찍힌다. 클라이언트 콘솔에 찍히는 건 csr 밖에 없음
+
+## 3. Layout / Images
+
+### Layout
+
+공통되는 페이지 최적화
+
+### Images
+
+Next.js 가 제공하는 최적화 Image Component. 아래와 같이 사용하면 됩니다.
+
+```tsx
 import Image from 'next/image'
 
 function Home() {
@@ -178,51 +266,37 @@ function Home() {
 export default Home
 ```
 
-For a markdown file, the default image tag can be used and the default `img` tag gets replaced by the `Image` component in the build process.
+# 장점
 
-Assuming we have a file called `ocean.jpg` in `data/img/ocean.jpg`, the following line of code would generate the optimized image.
+- Webp를 사용하여 이미지 크기가 작음(JPEG보다 약 30% 작음)
+- 응답 이미지 - 사용자의 뷰포트에 따라 올바른 이미지 크기가 제공됩니다
+- lazy loading - 이미지가 뷰포트로 스크롤될 때 로드됩니다. 스크롤 되지 않으면 보여지지 않음
+- 빌드 시간 대신 온 디맨드 최적화 - 빌드 시간 증가 없음!
 
-```
-![ocean](/static/images/ocean.jpg)
-```
+# 제약사항
 
-Alternatively, since we are using mdx, we can just use the image component directly! Note, that you would have to provide a fixed width and height. The `img` tag method parses the dimension automatically.
-
-```js
-<Image alt="ocean" src="/static/images/ocean.jpg" width={256} height={128} />
-```
-
-_Note_: If you try to save the image, it is in webp format, if your browser supports it!
-
-![ocean](/static/images/ocean.jpeg)
-
-<p>
-  Photo by [YUCAR
-  FotoGrafik](https://unsplash.com/@yucar?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
-  on
-  [Unsplash](https://unsplash.com/s/photos/sea?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText)
-</p>
-
-# Benefits
-
-- Smaller image size with Webp (~30% smaller than jpeg)
-- Responsive images - the correct image size is served based on the user's viewport
-- Lazy loading - images load as they are scrolled to the viewport
-- Avoids [Cumulative Layout Shift](https://web.dev/cls/)
-- Optimization on demand instead of build-time - no increase in build time!
-
-# Limitations
-
-- Due to the reliance on `next/image`, unless you are using an external image CDN like Cloudinary or Imgix, it is practically required to use Vercel for hosting. This is because the component acts like a serverless function that calls a highly optimized image CDN.
-
-  If you do not want to be tied to Vercel, you can remove `imgToJsx` in `remarkPlugins` in `lib/mdx.js`. This would avoid substituting the default `img` tag.
-
-  Alternatively, one could wait for image optimization at build time to be supported. A different library, [next-optimized-images](https://github.com/cyrilwanner/next-optimized-images) does that, although it requires transforming the images through webpack which is not done here.
-
-- Images from external links are not passed through `next/image`
-- All images have to be stored in the `public` folder e.g `/static/images/ocean.jpeg`
+- next/image 에 의존하기 때문에 Cloudinary 또는 Imgix와 같은 외부 이미지 CDN을 사용하지 않는 한 호스팅을 위해 Vercel을 사용해야 합니다. 이는 컴포넌트가 고도로 최적화된 이미지 CDN을 호출하는 서버리스 기능과 같은 역할을 하기 때문이다.
 
 ## 4. Routing & Shallow Routing
+
+Next.js 의 Router 는 file-system 기반으로 동작한다.
+
+- pages
+- src/pages
+
+폴더를 root 로 잡고 라우팅 구조를 만든다. 예를 들면 다음과 같다
+
+- pages/index.js => /
+- pages/ssg.js => /ssg
+- pages/products/[slug].js => /products/\*
+
+### 우선순위
+
+만약 pages/index.js 와 src/pages/index.js 둘다 존재한다면 어디
+
+### Routing
+
+이전에도 살짝 언급했드시 next.js 는 파일구조 기반 라우팅을 한다. 그 중심에는 **pages** 폴더가 있다. 예를 들면 다음과 같다.
 
 ## 5. API Routes
 
