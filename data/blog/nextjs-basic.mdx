@@ -242,7 +242,7 @@ export async function getStaticProps() {
 
 ## 3. Layout / Images
 
-### Layout
+### Layout ([공식문서 참고](https://nextjs.org/docs/basic-features/layouts))
 
 공통되는 페이지 최적화
 
@@ -279,6 +279,8 @@ export default Home
 
 ## 4. Routing & Shallow Routing
 
+### Routing
+
 Next.js 의 Router 는 file-system 기반으로 동작한다.
 
 - pages
@@ -292,11 +294,97 @@ Next.js 의 Router 는 file-system 기반으로 동작한다.
 
 ### 우선순위
 
-만약 pages/index.js 와 src/pages/index.js 둘다 존재한다면 어디
+만약 pages/index.js 와 src/pages/index.js 둘다 존재한다면 어느 파일이 동작하게 될까? 정답은 pages/index.js 가 동작한다. 하지만 일반적으로 리소스 관리를 위해 src 파일을 루트로 사용하는 경우가 많고, 최근에 등장한 app 폴더로 관리하는 경우도 많이 있다.
 
-### Routing
+### Nested Routing
 
-이전에도 살짝 언급했드시 next.js 는 파일구조 기반 라우팅을 한다. 그 중심에는 **pages** 폴더가 있다. 예를 들면 다음과 같다.
+폴더의 depth 가 깊어지면 깊어지는 대로 endpoint 를 자동으로 만들어서 라우팅을 해준다. 예를 들면 다음과 같다.
+
+- src/pages/product/first-item.js => /product/first-item
+- src/pages/product/my/info.js => /product/my/info
+
+다만 이렇게 되면 n-depth 만큼 계속 깊이가 깊어지고 그에 따라 매번 상대 경로 수정을 해주어야 한다. 이게 사실 귀찮은 부분이라고 생각 된다면 상대경로 컴파일 옵션을 수정해주면 된다.
+
+```tsx
+// src/pages/product/first-item.js
+import Layout from '../../components/layout'
+import NestedLayout from '../../components/nested-layout'
+
+export default function FirstItem() {
+  return (
+    <>
+      <h1 className="title">First Item</h1>
+    </>
+  )
+}
+
+FirstItem.getLayout = function getLayout(page) {
+  return (
+    <Layout>
+      <NestedLayout>{page}</NestedLayout>
+    </Layout>
+  )
+}
+```
+
+지금은 ../../ 이지만 depth 에 따라 변하기 때문에 매번 바꿔주는게 불편하다면 컴파일 옵션을 바꿔주면 된다.
+
+```tsx
+/// tsconfig.json or jsconfig.json
+{
+  compilerOptions: {
+    "baseUrl": "src",
+  }
+}
+```
+
+위처럼 수정하면 이제 상대경로 코드를 아래처럼 수정해야 한다. 그리고 더이상 depth 에 따라 경로 수정을 해줄 필요가 없어진다.
+
+```tsx
+import Layout from 'components/layout'
+import NestedLayout from 'components/nested-layout'
+```
+
+여기서 한가지 궁금한점. 만약 url 에 다음과 같이 입력을 주게 되면 어떨게 될까?
+
+```tsx
+;[hostname] / product / my
+```
+
+이렇게 하면 error 페이지로 이동한다. 왜냐하면 해당 endpoint 에 맞는 페이지가 없기 때문이다. 해당 페이지를 만들어 주려면
+
+-/product/my/index.js
+
+```tsx
+;/product/my / index.js
+```
+
+를 만들면 된다. index.js 는 항상 default 페이지 설정을 해준다고 생각하면 된다.
+
+### Slug
+
+파일 url 을 동적으로 만들어주기 위해 사용하는 기능이다. 아래와 같은 폴더 구조를 만들게 되면 동적인 라우팅이 가능하다.
+
+- src/pages/category/[slug].js -> /category/:slug
+- pages/[username]/info.js -> /:slug/info
+
+안에 들어가는 내용은 반드시 slug 일 필요는 없음. 어떠한 값이 들어가지는지 명시적으로 파일명을 작성해주면 좀 더 이해하기 쉬운 파일구조가 될 수 있을 것이다.
+
+### ...Slug
+
+동적 라우팅을 하는 방법중에 depth 를 무한하게 만들고 싶다면 이제 `...` 를 사용하면 좋다.
+
+- src/pages/cart/[...date].js -> /cart/\* (ex. cart/2023/02/12)
+
+이렇게 depth 를 무한하게 설정하는 것이 가능하다.
+
+## 4. Dynamic Routes
+
+이전에 보았던 slug 를 이용한 동적 라우팅에서 slug 안에 들어가는 값이 필요한 경우가 분명히 생긴다. 이전에 react 를 사용해 본적이 있다면 주로 `useParams` 라는 react-router hook 을 사용 했을 것 이다. 이제는 next.js 를 사용하기 때문에 `useParams` 대신에 `useRouter` 를 쓸 것이다.
+
+```tsx
+
+```
 
 ## 5. API Routes
 
