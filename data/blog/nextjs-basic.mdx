@@ -361,7 +361,7 @@ import NestedLayout from 'components/nested-layout'
 
 를 만들면 된다. index.js 는 항상 default 페이지 설정을 해준다고 생각하면 된다.
 
-### Slug
+### Slug (슬러그)
 
 파일 url 을 동적으로 만들어주기 위해 사용하는 기능이다. 아래와 같은 폴더 구조를 만들게 되면 동적인 라우팅이 가능하다.
 
@@ -370,7 +370,7 @@ import NestedLayout from 'components/nested-layout'
 
 안에 들어가는 내용은 반드시 slug 일 필요는 없음. 어떠한 값이 들어가지는지 명시적으로 파일명을 작성해주면 좀 더 이해하기 쉬운 파일구조가 될 수 있을 것이다.
 
-### ...Slug
+### ...Slug (옵서널 슬러그)
 
 동적 라우팅을 하는 방법중에 depth 를 무한하게 만들고 싶다면 이제 `...` 를 사용하면 좋다.
 
@@ -378,15 +378,287 @@ import NestedLayout from 'components/nested-layout'
 
 이렇게 depth 를 무한하게 설정하는 것이 가능하다.
 
-## 4. Dynamic Routes
+옵셔널 슬러그에 double bracket 사용하면 다음과 같은 차이가 나타난다.
+
+- page/car/[...slug].js => 404 (not found)
+- page/car/[...slug].js => url 에 슬러그가 존재하지 않아도 [[...slug]].js 로 라우팅 됨
+
+## 4. Dynamic Routes ([공식문서 참고](https://nextjs.org/docs/routing/dynamic-routes))
 
 이전에 보았던 slug 를 이용한 동적 라우팅에서 slug 안에 들어가는 값이 필요한 경우가 분명히 생긴다. 이전에 react 를 사용해 본적이 있다면 주로 `useParams` 라는 react-router hook 을 사용 했을 것 이다. 이제는 next.js 를 사용하기 때문에 `useParams` 대신에 `useRouter` 를 쓸 것이다.
 
 ```tsx
+// src/pages/post/[slug].js:
+
+import Layout from 'components/Layout'
+import SubLayout from 'components/SubLayout'
+import { useRouter } from 'next/router'
+
+export default function CategorySlug() {
+  const router = useRouter()
+  const { slug } = router.query
+
+  return (
+    <>
+      <h1 className="title">CategorySlug {slug}</h1>
+    </>
+  )
+}
+
+CategorySlug.getLayout = function getLayout(page) {
+  return (
+    <Layout>
+      <NestedLayout>{page}</NestedLayout>
+    </Layout>
+  )
+}
+```
+
+만약 slug 이름을 [username] 이라고 했다면 아래과 같이 받아야 한다.
+
+```tsx
+const { username } = router.query
+```
+
+그 이외에도 다양한 형태로 데이터를 받아오는 것이 가능하다.
+
+```tsx
+// pages/post/[pid].js
+
+// /post/abc
+{ "pid": "abc" }
+
+// /post/abc?foo=bar
+{ "foo": "bar", "pid": "abc" }
+
+// /post/abc?pid=123
+// slug 로 pid 를 주고 query 에도 pid 를 주면 slug 입력된 값으로 override 된다. 뒤에 query 에 입력 된 것들은 무시됨
+{ "pid": "abc" }
+
+
+// pages/post/[pid]/[comment].js
+// /post/abc/a-comment
+
+{ "pid": "abc", "comment": "a-comment" }
 
 ```
 
-## 5. API Routes
+query 는 routing 에 포함되는 내용이 아니기 때문에 어떤 내용이 얼마나 붙든 상관 없이 endpoint 만 routing 에 적용된다.
+
+```tsx
+import Link from 'next/link'
+
+function Home() {
+  return (
+    <ul>
+      <li>
+        <Link href="/post/abc">Go to pages/post/[pid].js</Link>
+      </li>
+      <li>
+        <Link href="/post/abc?foo=bar">Also goes to pages/post/[pid].js</Link>
+      </li>
+      <li>
+        <Link href="/post/abc/a-comment">Go to pages/post/[pid]/[comment].js</Link>
+      </li>
+    </ul>
+  )
+}
+
+export default Home
+```
+
+만약 다중 슬러그의 정보를 얻고 싶다면 이전과 똑같이 처리해주면 된다. 다만 다중 슬러그 이기 때문에 이제는 배열로 값이 리턴된다.
+
+```tsx
+// pages/post/[...slug].js
+
+{ "slug": ["a"] }
+{ "slug": ["a", "b"] }
+```
+
+double bracket 으로 감싸주면 서비스에 사용된 모든 endpoint 를 한번에 잡아준다.
+
+```tsx
+// pages/post/[[...slug]].js
+
+{ } // GET `/post` (empty object)
+{ "slug": ["a"] } // `GET /post/a` (single-element array)
+{ "slug": ["a", "b"] } // `GET /post/a/b` (multi-element array)
+
+```
+
+## 5. Shallow Routing ([공식문서 참고](https://nextjs.org/docs/routing/shallow-routing))
+
+Shallow routing 은 query 를 유지하고 data fetching 없이 URL 을 변경하는 라우팅 기법이다. data fetching 은 기본적은 promise 기반 fetching 뿐만 아니라 getServerSideProps, getStaticProps, and getInitialProps 들 까지 포함한다.
+
+예를들면 어떤 사용자가 commerce 페이지에서 제품을 구경하는데 query 안에 아이템 정보, 페이지 길이 등등의 정보가 들어 있다고 했을때 shallow routing 을 하게되면 url 을 변경해도 기본의 query 를 유지하면서 추가적인 data fetching 을 하지 않고도 기존의 query 옵션을 유지하면서 해당 페이지로 이동하는 것이 가능하다.
+
+원래 url 을 바구는 방식에는 3가지가 있다. (next.js 기준, 리액트 까지 포함하면 더 많음)
+
+```tsx
+location.replace('url'): 로컬 state 유지 안됨 (rerender)
+
+router.push(url): 로컬 state 유지 / data fetching 일어남
+
+router.push(url, as, { shallow: true }): 로컬 state 유지 / data fetching 일어나지 않음
+```
+
+```tsx
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+
+export async function getServerSideProps() {
+  console.log('server')
+
+  return {
+    props: {},
+  }
+}
+
+export default function Info() {
+  const [clicked, setClicked] = useState(false)
+  const router = useRouter()
+  const { status = 'initial' } = router.query
+
+  return (
+    <div>
+      <h1>Click status {String(clicked)}</h1>
+      <h1>Status: {status}</h1>
+      <button
+        onClick={() => {
+          alert('edit')
+          setClicked(true)
+          location.replace('/settings/my/info?status=editing')
+        }}
+      >
+        edit (replace)
+      </button>
+      <br />
+      <button
+        onClick={() => {
+          alert('edit')
+          setClicked(true)
+          router.push('/settings/my/info?status=editing')
+        }}
+      >
+        edit (push)
+      </button>
+      <br />
+      <button
+        onClick={() => {
+          alert('edit')
+          setClicked(true)
+          router.push('/settings/my/info?status=editing', undefined, {
+            shallow: true,
+          })
+        }}
+      >
+        edit (shallow)
+      </button>
+    </div>
+  )
+}
+```
+
+위의 예시를 보게 되면 3가지 서로 다른 방법으로 routing 을 하고 있습니다.
+
+- 만약 첫번쨰 버튼을 누르게 되면 query 가 유지 된 상태로 라우팅을 하지만 state 유지가 되지 않음
+- 만약 두번째 버튼을 누르게 되면 query 가 유지 된 상태로 라우팅을 하며 state 유지가 된다. 하지만 getServerSideProps 의 작동을 막지 는 못함. 즉 data fetching 은 여전히 일어남
+- 만약 세번째 버튼을 누르게 되면 uery 가 유지 된 상태로 라우팅을 하며 state 유지가 된다. 하지만 getServerSideProps 의 작동도 일어나지 않음. 즉 data fetching 이 일어나지 않음
+
+## 6. API Routes
+
+Next.js 에서 API 호출은 기존의 react 보다 훨씬 구조적으로 관리하는 것이 가능합니다. 기존의 file-system 과 마찬가지로 api 또한 파일시스템으로 관리해주는 것이 가능합니다.
+
+예시: prisma 를 이용하여 데이터를 가져오기
+
+- pages/api/\*
+
+```tsx
+// /pages/products/index.tsx
+
+useEffect(() => {
+  fetch(`/api/get-products?skip=0&take=${take}`)
+    .then((res) => res.json())
+    .then((data) => setProducts(data.items))
+}, [])
+
+// pages/api/get-products
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function getProduct(id: number) {
+  try {
+    return await prisma.products.findUnique({
+      where: { id },
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+type Data = {
+  items?: any
+  message: string
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const { id } = req.query
+
+  if (!id) {
+    res.status(400).json({ message: 'no id' })
+    return
+  }
+
+  try {
+    const response = await getProduct(Number(id))
+    res.status(200).json({
+      items: response,
+      message: `Success to get products`,
+    })
+  } catch (error) {
+    res.status(400).json({ message: `Failed to get items` })
+  }
+}
+```
+
+index.tsx 에서 api 호출을 하게 되면 상응하는 pages/api 파일 시스템에 의해 api request 가 보내진다. 파일 구조를 이용하여 처리 되기 떄문에 사용하기 쉽고 파일 관리하기가 상당이 용이하다. 또한 dynamic 하게 api routing 하는 것도 가능하다.
+
+```tsx
+
+// pages/[username]/[info].js
+
+...
+
+// 여기서 uid 는 쿼리에 줘야 하는 옵션이다.
+// Ex.) [hostname]/kihun/hello?uid=100
+const router = useRouter()
+const {username,info,uid} = router.query
+console.log(username,info,uid) // kihun,hello,100
+
+useEffect(() => {
+  if(!uid) {
+    fetch(`/api/user-info/${uid}`)
+      .then(res => res.json())
+      .then(data => setData(data))
+  }
+}, [uid])
+
+
+// pages/api/user-info/[uid].js
+
+export default function handler(req,res) {
+  const {uid} = req.query
+  const cookie = req.cookies
+  // cookie 는 브라우저에서 강제로 설정해서 테스팅 가능함
+  res.status(200).json({name: `${uid} ${JSON.stringify(cookie)}`})
+}
+
+```
+
+이런식으로 동적 api 라우팅도 가능하다.
 
 감사합니다.
 
