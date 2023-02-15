@@ -1,0 +1,200 @@
+---
+title: '[Database] SQL cheat cheet'
+date: '2023-01-29'
+lastmod: '2023-01-29'
+tags: ['database', 'sql', 'cheat sheet']
+draft: false
+summary: 'SQL basic cheat sheet'
+authors: ['default']
+---
+
+![main](/static/database/cover.jpg)
+
+온라인 SQL 컴파일러를 이용하여 cheat sheet 를 작성해보겠습니다. 작성되는 모든 데이터들은 아래 링크에 설정되어있는 테이블을 기준으로 한다는 점 참고 부탁드립니다.
+
+https://www.programiz.com/sql/online-compiler/
+
+![main](/static/sql/table.png)
+
+## 1.Querying tables
+
+```tsx
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+SELECT * FROM Shippings;
+```
+
+```tsx
+SELECT first_name FROM Customers;
+SELECT item FROM Orders;
+SELECT status FROM Shippings;
+```
+
+```tsx
+SELECT first_name,last_name FROM Customers;
+SELECT item,amount FROM Orders;
+SELECT status,customer FROM Shippings;
+```
+
+```tsx
+SELECT first_name,age FROM Customers
+ORDER BY age ASC;
+
+SELECT item,amount FROM Orders
+ORDER BY amount DESC;
+```
+
+```tsx
+SELECT DISTINCT country FROM Customers;
+```
+
+## 2.Filtering Data
+
+```tsx
+SELECT * FROM Customers
+WHERE age >=23;
+```
+
+```tsx
+SELECT * FROM Orders
+WHERE amount BETWEEN 350 AND 500;
+```
+
+```tsx
+SELECT * FROM Customers
+WHERE country = 'USA';
+
+SELECT * FROM Customers
+WHERE country != 'USA'
+
+SELECT * FROM Customers
+WHERE country IN ('USA', 'UK');
+```
+
+```tsx
+SELECT *
+FROM Orders
+WHERE item LIKE 'm%' AND item NOT LIKE '%e';
+```
+
+```tsx
+SELECT *
+FROM Shippings
+WHERE status = 'Pending' AND shipping_id > 1;
+```
+
+```tsx
+SELECT *
+FROM Customers
+WHERE country = 'UK' OR age > 22;
+```
+
+```tsx
+SELECT *
+FROM Customers
+WHERE age IS NOT NULL;
+
+SELECT *
+FROM Customers
+WHERE age IS NULL;
+```
+
+## 3.Aggregating Data
+
+- SUM
+- AVG
+- MAX
+- MIN
+
+```tsx
+SELECT MIN(age)
+FROM Customers;
+
+SELECT AVG(age)
+FROM Customers;
+
+
+SELECT SUM(age)
+FROM Customers;
+
+
+SELECT MAX(age)
+FROM Customers;
+```
+
+```tsx
+SELECT country, AVG(age)
+FROM Customers
+GROUP BY country;
+```
+
+```tsx
+SELECT country, AVG(age) AS avg_age
+FROM Customers
+GROUP BY country
+ORDER BY avg_age DESC;
+```
+
+```tsx
+SELECT status
+FROM Shippings
+GROUP BY status
+HAVING COUNT(shipping_id) > 2;
+```
+
+```tsx
+SELECT country, MAX(age)
+FROM Customers
+WHERE country IN ('USA','UK')
+GROUP BY country;
+```
+
+```tsx
+SELECT country, COUNT(country) AS number_of_countries
+FROM Customers
+GROUP BY country;
+```
+
+## 4.Join tables
+
+```tsx
+// 차집합 A-B
+SELECT * FROM TableA A
+LEFT JOIN TableB B ON
+A.key = B.key WHERE B.key IS NULL
+```
+
+```tsx
+//차집합 B-A
+SELECT * FROM TableA A
+RIGHT JOIN TableB B ON
+A.key = B.key WHERE A.key IS NULL
+```
+
+```tsx
+// 교집합 A∩B
+SELECT * FROM TableA A
+INNER JOIN TableB B ON
+A.key = B.key
+```
+
+```tsx
+// 합집합 A∪B
+SELECT * FROM TableA A
+FULL OUTER JOIN TableB B ON
+A.key = B.key
+```
+
+```tsx
+// 합집합-교집합 A∪B-A∩B
+SELECT * FROM TableA A
+FULL OUTR JOIN TableB B ON
+A.key = B.key WHERE A.key IS NULL
+OR B.key IS NULL
+```
+
+## reference
+
+- [SQL Joins Visualizer](https://sql-joins.leopard.in.ua/)
+- [SQL online-compiler](https://www.programiz.com/sql/online-compiler/)
+- [SQL for Data Science](https://s3.amazonaws.com/assets.datacamp.com/email/other/SQL+for+Data+Science.pdf)
