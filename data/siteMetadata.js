@@ -2,7 +2,7 @@ const siteMetadata = {
   title: 'Blog by @deutschkihun',
   author: 'Kihun Kim',
   headerTitle: 'deutschkihun',
-  description: 'A blog created with Next.js, React, TypeScript and Tailwind.css',
+  description: 'A blog created by @deutschkihun',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://blog-deutschkihun.vercel.app',
