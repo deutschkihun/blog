@@ -1,16 +1,16 @@
 ---
-title: '[Web] PWA'
+title: '[Web] PWA & WebView'
 date: '2023-01-29'
 lastmod: '2023-01-29'
 tags: ['pwa']
 draft: false
-summary: 'PWA 에 대한 기초 지식 포스팅'
+summary: 'PWA & WebView 에 대한 기초 지식 포스팅'
 authors: ['default']
 ---
 
 ![main](/static/pwa/cover.jpg)
 
-PWA 에 대한 기초 지식 포스팅
+PWA & WebView 에 대한 기초 지식 포스팅
 
 ## 1.PWA (Progressive Web App)
 
@@ -73,10 +73,28 @@ PWA builder 에서 제시해 주는 가이드라인데 맞춰 작업해주면 �
 
 - https://developer.chrome.com/docs/workbox/
 
+## 5. WebView
+
+- WebView는 App에서 웹브라우저를 이용해 화면을 보여주는 방식
+
+- 예를 들어, 카카오톡에서 대화상대와 링크를 주고 받으면 카카오톡 앱에서 웹뷰로 해당링크에 접속
+
+## 6. WebView 를 사용하는 이유 그리고 문제점
+
+WebView 를 사용하는 이유
+
+- 웹뷰(Webview)를 이용하여 개발하면, 웹과 App을 한번에 개발하는 것이기 때문에 개발 속도가 빠르고, 사용자에게 같은 이용 경험을 제공할 수 있다.
+
+- 반응형만 잘 대비해두면, 서비스를 이용할 때 고객은 앱에서는 물론 웹에서도 같은 경험을 할 수 있다.
+
+WebView 의 문제점
+
+- native api 를 사용하기 어려움, 앱 사용간 native 스러운 부드러움이 떨어짐
+- 깜빡이는 하얀 화면
+
 ## reference
 
 - [[React] manifest.json 이란?](https://velog.io/@leyuri/React-manifest.json-%EC%9D%B4%EB%9E%80)
-
 - [PWA(Progressive Web Apps)란 무엇이고 장단점은 무엇인가](https://ux.stories.pe.kr/224)
-
-- [PWA (Progressive Web App) 개념과 따라만들기 📲]https://www.youtube.com/watch?v=FEBkne7Nyu4
+- [PWA (Progressive Web App) 개념과 따라만들기](https://www.youtube.com/watch?v=FEBkne7Nyu4)
+- [App에서-웹뷰WebView는-왜-쓰는-것일까-웹뷰의-장점과-단점-웹뷰란](https://hammerbrother.tistory.com/entry/App%EC%97%90%EC%84%9C-%EC%9B%B9%EB%B7%B0WebView%EB%8A%94-%EC%99%9C-%EC%93%B0%EB%8A%94-%EA%B2%83%EC%9D%BC%EA%B9%8C-%EC%9B%B9%EB%B7%B0%EC%9D%98-%EC%9E%A5%EC%A0%90%EA%B3%BC-%EB%8B%A8%EC%A0%90-%EC%9B%B9%EB%B7%B0%EB%9E%80)
