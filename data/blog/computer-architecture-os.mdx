@@ -73,6 +73,14 @@ OS 는 기술 인터뷰에서 지원자의 기본적인 컴퓨터 공학 지식�
 - 싱글 스레드는 한번에 하나의 콜스택 호출, 즉 한번에 하나의 작업만 수행
 - 멀티 스레드는 한번에 여러개의 콜스택 호출, 즉 한번에 여러개의 작업 수행 -> 동일한 자원에 동시에 접근하는 일이 발생 할 수 있음 -> 동기화 필수
 
+A process is a unit of execution that is managed by the operating system. A process has its own memory space, file handles, and other system resources, and is typically associated with a single program or application. Each process is isolated from other processes, meaning that it cannot access the memory or resources of other processes without explicit permission.
+
+On the other hand, a thread is a lightweight unit of execution that exists within a process. A process can have multiple threads, each of which can execute concurrently and share the same memory space and system resources as the parent process. Threads are used to perform multiple tasks simultaneously within a single program, which can improve performance and responsiveness.
+
+One key difference between threads and processes is that threads share the same memory space as the parent process, whereas processes have their own isolated memory space. This means that communication and synchronization between threads is relatively easy and efficient, while communication between processes is more complex and typically involves inter-process communication mechanisms.
+
+In general, processes are used to manage separate instances of a program, while threads are used to perform concurrent tasks within a single program. Both processes and threads have their own advantages and disadvantages, and choosing the appropriate model for a given task depends on a variety of factors, such as the nature of the program, the hardware and software environment, and the performance requirements.
+
 ## 4. Race Condition
 
 여러 개의 프로세스가 공통 자원을 동시 접근하여 읽거나, 쓰는 경우 어떤 순서로 접근했는지에 따라서 실행 결과가 달라지는 상황이다.
