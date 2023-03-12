@@ -12,37 +12,56 @@ authors: ['default']
 
 OS 는 기술 인터뷰에서 지원자의 기본적인 컴퓨터 공학 지식을 확인하기 위해 자주 사용되는 주제중에 하나 입니다. 좀 더 자세하고 완벽한 인터뷰 준비를 위해서는 OS 관련 지식에 대해서 아는 것은 굉장히 중요하다고 생각합니다. 이번 포스팅을 통해 필자가 중요하다고 생각하는 OS 관련 배경지식에 대해서 알아보겠습니다
 
-## 1. 컴퓨터 구조
+## 1. 컴퓨터 구조를 알아야햐는 가장 중요한 이유
 
-가장 기본적인 컴퓨터 구조는 크게 CPU,디스크,메모리,I/O (입출력장치) 로 구성되어 있다.
+성능(performance),용량(capacity),비용(cost) 과 관련된 문제를 효과적으로 해결하기 위해서는 컴퓨터 구조에 대한 깊은 이해도가 필요하다.
 
-![computer-architecture](/static/os-basic/computer-architecture.png)
+컴퓨터는 human written langguage 는 읽을수 없다. 예를 들먼 java,c. 그래서 그러한 언어들을 machine langguage 로 변환해주는 작업이 필요하다. 그러한 작업을 compile 이라고 한다.
+
+## 2. 컴퓨터 구조의 기초
+
+1. 컴퓨터는 2가지 정보를 이해할 수 있습니다.
+
+- 명렁어
+- 데어터
+
+2. 컴퓨터는 컴파일이라는 과정을 통해 progmramming langugage 를 machine langugage command (ex ByteCode) 로 변환하여 프로그램을 실행한다.
+
+![computer-architecture](/static/os-basic/compile.png)
+
+3. 기본적인 컴퓨터 구조는 크게 CPU,보조기억장치,메모리,I/O (입출력장치),메인보드 로 구성되어 있다.
+
+![computer-architecture](/static/os-basic/layout.png)
 
 ### CPU
 
-- CPU 에는 ALU (수학적 산술연산 처리장치) 와 레지스터로 구성. 이들을 이용하여 연산작업을 처리한다.
-- CPU 안에는 캐시메모리가 존재한다. 캐시 메모리는 속도가 빠른 장치와 느린 장치간의 속도차에 따른 병목 현상을 줄이기 위한 메모리
-- 이러한 역할을 수행하기 위해서는 CPU 가 어떤 데이터를 원할 것인가를 어느 정도 예측할 수 있어야 함.
-- 이 때 예측의 `적중율(Hit rate)`을 극대화 시키기 위해 데이터 `지역성(Locality)의 원리`를 사용
-- 즉, `지역성(Locality)`아란 기억 장치 내의 정보를 균일하게 Access 하는 것이 아닌 어느 한 순간에 특정 부분을 집중적으로 참조하는 특성을 말한다.
+CPU 는
 
-### 메모리
+- ALU (arithmetic and logical unit): 컴퓨터의 계산기
+- 레지스터 (register): cpu 내부의 임시 저장 장치 (temporary storage)
+- 제어장치 (control unit): 제어신호 (메모리 읽기,쓰기 신호) 를 발생시키고 명령어를 해석하는 장치
 
-- 임시 저장공간
-- 메모리또한 high cost of storage space 떄문에 프로그램의 모든 데이터를 메모리에 다 올릴 수 없어서 일부만 올리고 일부만 다시 내려주는 방식을 취한다.
-- 그래서 메모리에 어떠한 데이터를 올리고 내릴지를 관리하는 것을 메모리 관리라고 한다.
+로 구성되어있다.
 
-### 디스크
+### 메모리(ex. RAM)
 
-- 저장소
+- 메모리는 현재 실행되는 프로그램의 명령어와 데이터를 저장하는 임시 저장공간
+- 프로그램이 실행되려면 메모리에 저장되어 있어야 한다.
+- 다만 메모리는 저장비용이 높아 프로그램의 일부 코드 및 리소스만 load 한다.
+- 전원이 꺼지면 저장된 내용를 잃는다.
+
+### 보조기억장치(디스크)
+
+- 하드디스크를 말한다
+- 메모리에 비해 저장비용이 훨씬 저렴하다.
 
 ### I/O
 
 - 입출력 장치, 예를들면 모니터,스피커
 
-## 2.컴퓨터 구조의 작동 흐름
+## 3.컴퓨터 구조의 작동 흐름
 
-1. 개발자들이 C,Java 와 같은 언어로 프로그램을 만든다 라고 했을 떄 사람이 작성한 코드는 기계가 읽을 수 없다. 따라서 컴파일을 하여 기계가 읽을 수 있는 bytecode 변환해주어야 한다. 이렇게 해서 만들어지는 **프로그램**들이 생성된다.
+1. 개발자들이 C,Java 와 같은 언어로 프로그램을 만든다 라고 했을 떄 사람이 작성한 코드는 기계가 읽을 수 없다. 따라서 컴파일을 하여 기계가 읽을 수 있는 bytecode 변환해주어야 한다. 이렇게 해서 만들어지는 **프로그램** 에는 다음과 같은 것들이 있다.
 
 - .exe (실행파일)
 - .dll (라이브러리)
@@ -69,17 +88,8 @@ OS 는 기술 인터뷰에서 지원자의 기본적인 컴퓨터 공학 지식�
 
 ## 3. 스레드
 
-- 스레드는 프로세스의 실행 단위이다.
-- 싱글 스레드는 한번에 하나의 콜스택 호출, 즉 한번에 하나의 작업만 수행
-- 멀티 스레드는 한번에 여러개의 콜스택 호출, 즉 한번에 여러개의 작업 수행 -> 동일한 자원에 동시에 접근하는 일이 발생 할 수 있음 -> 동기화 필수
-
-A process is a unit of execution that is managed by the operating system. A process has its own memory space, file handles, and other system resources, and is typically associated with a single program or application. Each process is isolated from other processes, meaning that it cannot access the memory or resources of other processes without explicit permission.
-
-On the other hand, a thread is a lightweight unit of execution that exists within a process. A process can have multiple threads, each of which can execute concurrently and share the same memory space and system resources as the parent process. Threads are used to perform multiple tasks simultaneously within a single program, which can improve performance and responsiveness.
-
-One key difference between threads and processes is that threads share the same memory space as the parent process, whereas processes have their own isolated memory space. This means that communication and synchronization between threads is relatively easy and efficient, while communication between processes is more complex and typically involves inter-process communication mechanisms.
-
-In general, processes are used to manage separate instances of a program, while threads are used to perform concurrent tasks within a single program. Both processes and threads have their own advantages and disadvantages, and choosing the appropriate model for a given task depends on a variety of factors, such as the nature of the program, the hardware and software environment, and the performance requirements.
+- 스레드는 프로세스의 실행 단위이다. (thread is a lightweight unit of execution that exists within a process)
+- 그와 반면에 프로세스는 프로그램을 실행 단위를 말한다. (process unit of execution that is managed by the operating system)
 
 ## 4. Race Condition
 
@@ -93,4 +103,6 @@ In general, processes are used to manage separate instances of a program, while 
 
 - [프로세스와 스케줄링](https://velog.io/@xxhaileypark/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81)
 
-- - [비전공자분들 위한 컴퓨터 전공 수업 10분으로 압축 (컴퓨터 구조 + 운영 체제)](https://www.youtube.com/watch?v=J06SirxZG7M)
+- [비전공자분들 위한 컴퓨터 전공 수업 10분으로 압축 (컴퓨터 구조 + 운영 체제)](https://www.youtube.com/watch?v=J06SirxZG7M)
+
+- [컴퓨터 구조와 운영체제 50분만에 핵심 개념 정복하기 (ft. 강민철 저자님)](https://www.youtube.com/watch?v=LBqJwmFMQHI)
