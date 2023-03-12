@@ -233,7 +233,11 @@ AJAX 를 통해 비동기 API 통신을 하는 방법에는 XMLHttpRequest 와 f
 
 자바스크립트는 기본적으로 single threaded language 이다. 그 말은 오직 한개의 call stack (단일 콜 스택) 만이 프로그램을 실행하는데 사용된다. 다른말로 바꿔말하면, 자바스크립트가 한 번에 1개의 작업만 다룰 수 있다는 뜻이다.
 
+JavaScript is basically a single-threaded language. It means that only one call stack is used to run the program. In other words, JavaScript can only handle one task at a time.
+
 **call stack은 자바스크립트 엔진이 구동되면서 실행 중인 코드를 추적하는 공간이 콜스택이다.**
+
+The call stack is a tracking space of javascript engine
 
 ```tsx
 function foo() {
@@ -407,8 +411,8 @@ setTimeout 은 비동기 처리함수 이며 WebAPI 기능의 일부이다. 위�
 
 ## 5. 자바스크립트 대신 타입스크립트 사용하는 이유
 
-- 컴파일 상에서 에러를 발견 할 수 있다.
-- 타입을 강제화한다.(개발자들 간의 소통 문제로 버그를 발생시킬 경우 방지).
+- 코드를 실행하기 이전에 에러를 강제화 할 수 있다. (The error can be enforced before executing the code.)
+- 타입을 강제화한다.(개발자들 간의 소통 문제로 버그를 발생시킬 경우 방지). (Force the type (preventing bugs due to communication problems between developers))
 
 ## 6. module(모듈)
 
@@ -423,7 +427,7 @@ setTimeout 은 비동기 처리함수 이며 WebAPI 기능의 일부이다. 위�
 
 ![module2](/static/interview/module2.png)
 
-**모듈** 을 한 문장으로 정의 하자면: 특정한 기능을 하는 함수나 변수들의 집합을 말한다.
+**모듈** 을 한 문장으로 정의 하자면: 특정한 기능을 하는 함수나 변수들의 집합을 말한다. (module is a set of functions or variables that perform a particular task.)
 
 노드에서는 두 가지 형식의 모듈을 사용한다.
 
