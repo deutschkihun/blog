@@ -1,0 +1,57 @@
+---
+title: '[deployment] 빌드와 배포'
+date: '2023-03-01'
+lastmod: '2023-03-01'
+tags: ['build', 'deployment']
+draft: false
+summary: '개발자가 알아야할 빌드와 배포의 기초.'
+authors: ['default']
+---
+
+![main](/static/network/cover.jpg)
+
+## 1.빌드
+
+소스 코드르 실행 가능한 소프트웨어로 만들어주는 과정
+
+The process of turning source code into executable software
+
+## 2.배포
+
+Deployment is the process of making a new application or system available for use. This usually involves moving the application or system from a development or test environment to a production environment.
+
+## 3.배포 전략
+
+Automate the deployment process. This involves creating a script that will handle all of the steps involved in deploying your application, from copying the files to the server to running any necessary database migrations.
+
+## 4. Release vs Deployment
+
+- Release Deployment: Software releases are visible to users.
+- Depolyment: Deployed codes can run in any target environment inside the infrastructure
+
+## 5. What are some best practices to follow during code deployments?
+
+- Test your code before deploying to a production environment. (unit test, e2e test)
+- Automate the deployment process
+- Prepare backup code and db or solid rollback plan in different situation
+- Communicating with all stakeholders before and during the deployment process
+
+## 6. What is a branch merge conflict? How does it happen?
+
+A branch merge conflict is when two different branches of a project have both been changed, and those changes conflict with each other. This can happen when two people are working on the same project at the same time, and they make changes to the same files. When they try to merge their changes together, the conflict will occur.
+
+## 7. What is regression testing? When is it performed?
+
+Regression testing is a type of testing that is used to verify that changes to a system or application have not caused any unintended effects. This type of testing is typically performed after any changes have been made to the system in order to ensure that the system is still functioning correctly.
+
+## 8. What is the purpose of version control systems like git or SVN?
+
+Version control systems are used to track changes to files over time. This is especially important for software development, because it allows developers to easily revert back to previous versions of their code if they need to. Additionally, version control systems make it easy for multiple developers to work on the same codebase simultaneously without running into conflicts.
+
+감사합니다.
+
+#### reference:
+
+- [20 Deployment Interview Questions and Answers](https://climbtheladder.com/deployment-interview-questions/)
+- [[10분 테코톡] 🐳스티치의 빌드와 배포](https://www.youtube.com/watch?v=6SvUZqbU37E)
+-

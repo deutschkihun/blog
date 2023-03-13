@@ -151,21 +151,7 @@ Traditional sessions are a memory-hungry alternative to sessions, where the serv
 
 It verifies the client by issuing a token and validating the token, as shown above. Sessions are persistent, meaning that if you close the web browser, the session you've been keeping is lost. With tokens, however, you don't have to worry about that, so they don't need to be persistent, which is why they're most commonly used in logins.
 
-## 6. Request header / body & Response header / body
-
-chrome 기준으로 request header 와 response header 는 headers tab 에서 확인 가능. header 에는 각각 request 와 response 에 대한 정보들이 들어가 있습니다.
-
-chrome 기준으로 request body 는 바로 request payload 와 동일합니다.
-
-![main](/static/network/request-body.png)
-
-chrome 기준으로 response body 는 response tab 에서 확인 가능합니다.
-
-![main](/static/network/response-body.png)
-
-- equest header
-
-## 7.TCP vs UDP
+## 6.TCP vs UDP
 
 ### UDP ( Non Connection Oriented Protocol)
 
@@ -179,6 +165,12 @@ chrome 기준으로 response body 는 response tab 에서 확인 가능합니다
 - 높은 신뢰성을 보장한다.
 - UDP보다 속도가 느리다.
 - 3-way handshaking과정을 통해 연결을 설정하고 4-way handshaking을 통해 해제한다.
+
+## 8. Uri vs Url
+
+- URI(Uniform resource Identifier) 네트워크 상에서 자원의 위치
+- URL(Uniform Resource Locator) 는 주소
+- URI가 URL를 포괄하는 개념
 
 감사합니다.
 
